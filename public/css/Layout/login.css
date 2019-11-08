@@ -1,0 +1,87 @@
+/*==================================================================== Login*/
+.form_inputs input{
+  font-family: "Roboto", sans-serif;
+  border-radius: 0px;
+  border-style: solid;
+  font-size:  13px;
+  outline: none;
+}
+
+small{
+  font-family: "Roboto", sans-serif;
+}
+
+.form-control:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: none; 
+    outline: none;
+    box-shadow: none; 
+}
+
+.submit_btn {
+  padding: 0px 40px;
+  background-image: -webkit-gradient(linear, left top, right top, from(#73ca96), color-stop(51%, #98d370), to(#73ca96));
+  background-image: -webkit-linear-gradient(left, #73ca96 0%, #98d370 51%, #73ca96 100%);
+  background-image: -o-linear-gradient(left, #73ca96 0%, #98d370 51%, #73ca96 100%);
+  background-image: linear-gradient(to right, #73ca96 0%, #98d370 51%, #73ca96 100%);
+  background-size: 200% auto;
+  z-index: 2;
+  display: inline-block;
+  -webkit-transition: all 400ms ease-out;
+  -o-transition: all 400ms ease-out;
+  transition: all 400ms ease-out;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-family: "Poppins", sans-serif;
+  line-height: 50px;
+  border-radius: 5px;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  text-align: center;
+  cursor: pointer;
+  -webkit-transition: all 300ms linear 0s;
+  -o-transition: all 300ms linear 0s;
+  transition: all 300ms linear 0s;
+  -webkit-box-shadow: 0px 10px 20px 0px rgba(60, 64, 143, 0.2);
+  box-shadow: 0px 10px 20px 0px rgba(60, 64, 143, 0.2);
+}
+
+.submit_btn:hover {
+  background-position: right center;
+  color: #fff;
+}
+/*Hay un bug cuando se responsivea en a 767px con el fondo*/
+.home_banner_area .banner_inner .overlay {
+  background: url(../../img/home_banner2.jpg) no-repeat scroll center center;
+  /*background-size: 1500px 1000px;*/
+  background-size: cover;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  z-index: -1;
+}
+
+body{
+  padding: 5% 0;
+  box-sizing: border-box;
+}
+
+.feature_item {
+  border-radius: 10px;
+  padding: 60px 20px 60px 30px;
+  -webkit-transition: all 500ms ease-out 0s;
+  -o-transition: all 500ms ease-out 0s;
+  transition: all 500ms ease-out 0s;
+  background: #fff;
+  max-width: 55%;
+  box-shadow: 7px 10px 4px #00000052;
+}
