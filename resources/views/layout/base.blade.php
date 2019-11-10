@@ -99,36 +99,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         <!-- Bootbox.js -->
         <script src="vendors/bootbox.min.js"></script>
         <script src="vendors/bootbox.locales.min.js"></script>
-        <script type="text/javascript">
-          // Confirms
-          // bootbox.confirm({
-          //     message: "This is a confirm with custom button text and color! Do you like it?",
-          //     buttons: {
-          //         confirm: {
-          //             label: 'Yes',
-          //             className: 'btn-success'
-          //         },
-          //         cancel: {
-          //             label: 'No',
-          //             className: 'btn-danger'
-          //         }
-          //     },
-          //     callback: function (result) {
-          //         console.log('This was logged in the callback: ' + result);
-          //     }
-          // });
-
-          // Render datatable
-          $(document).ready(function() {
-
-              $('#example').DataTable({
-                  "scrollX": true
-              });
-              
-              // $('#modalPermissions').modal();
-          } );
-
-        </script>
+        <!-- Notify.js -->
+        <script src="vendors/bootstrap-notify-master/bootstrap-notify.min.js"></script>
+        <!-- Main Script -->
+        @switch($module)
+          @case(1)
+             <script src="js/modules/suppliers.js"></script> 
+            @break
+        @endswitch
     </body>
 </html>
 <!-- New color morado claro #8d83ff -->

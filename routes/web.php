@@ -38,6 +38,4 @@ Route::get('/products', function(){
 });
 
 
-Route::get('/suppliers', function(){
-	return view('modules.suppliers');
-});
+Route::resource('suppliers', "SupplierController");
