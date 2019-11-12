@@ -8,13 +8,14 @@
         <title>Pedidos</title>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
         <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="vendors/animate-css/animate.css">
         <!-- main css -->
         <link rel="stylesheet" href="css/Layout/header.css">
         <link rel="stylesheet" href="css/Layout/footer.css">
         <link rel="stylesheet" href="css/style.css">
-        <link rel="stylesheet" href="css/responsive.css">
+        <!-- <link rel="stylesheet" href="css/responsive.css"> -->
     </head>
     <body>
         
@@ -55,7 +56,7 @@
                                        <li class="nav-item"><a class="nav-link" href="/">Exit</a></li>
                                    </ul>
                                </li>
-                               <li class="nav-item">&nbsp;</a></li> 
+                               <!-- <li class="nav-item">&nbsp;</a></li>  -->
                                <li class="nav-item">&nbsp;</a></li> 
                            </ul>
                        </div> 

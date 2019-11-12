@@ -20,7 +20,7 @@
         <hr>
         <div class="row">
             <div class="col-md-12">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>Document</th>
@@ -55,7 +55,7 @@
                     </tfoot>
                 </table>
             </div>
-            <hr>
+            <!-- <hr> -->
         </div>
     </div>
 </section>
