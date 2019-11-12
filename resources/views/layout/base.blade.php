@@ -104,7 +104,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         <!-- Main Script -->
         @switch($module)
           @case(1)
-             <script src="js/modules/suppliers.js"></script> 
+            <script src="js/modules/suppliers.js"></script> 
+            @break
+          @case(2)
+            <script type="text/javascript">
+              $('#example').DataTable({
+                "scrollX":true
+              });
+            </script>
             @break
         @endswitch
     </body>

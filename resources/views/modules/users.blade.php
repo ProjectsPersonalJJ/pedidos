@@ -4,7 +4,7 @@
 
     <section class="home_gallery_area">
         <div class="container">
-            <form class="row form_inputs" method="post" id="" novalidate="novalidate">
+            <form class="row form_inputs" method="post" novalidate="novalidate">
 
                 <div class="col-md-12 text-center">
                     <label class="h1">Form Users</label>

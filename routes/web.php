@@ -20,7 +20,9 @@ Route::get('/home', function(){
 });
 
 Route::get('/users', function(){
-	return view('modules.users');
+	return view('modules.users',[
+		"module"=>2
+	]);
 });
 
 Route::get('/orders', function(){

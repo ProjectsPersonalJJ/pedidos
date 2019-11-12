@@ -37,33 +37,8 @@
         <section id="ReadSuppliers">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <table id="suppliersTable" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Name Supplier</th>
-                                    <th>E-mail</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>
-                                        <button class="btn btn-warning btn-sm disabled"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-                                        <button class="btn btn-success btn-sm"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;Active</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Name Supplier</th>
-                                    <th>E-mail</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                    <div class="col-md-12" id="suppliersTable">
+                        
                     </div>
                 </div>
             </div>

@@ -63,13 +63,32 @@ class SupplierController extends Controller
 
             $suppliers = SuppliersModel::all();
 
-            $table="";    
+            $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
+            $table.="<thead>
+                        <th>Name</th>
+                        <th>E-mail</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </thead></tbody>";
             foreach ($suppliers as $supplier) {
                 $table.="<tr>
-                            <td>$supplier->name</td>
+                            <td id=\"$supplier->idsupplier\">$supplier->name</td>
                             <td>$supplier->email</td>
+                            <td>"."<span class=\"badge badge-".
+                            ($supplier->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
+                            ."</td>
+                            <td>
+                                <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                <button class=\"btn btn-success btn-sm\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
+                            </td>
                         </tr>";
             }
+            $table.="</tbody><tfoot>
+                        <th>Name</th>
+                        <th>E-mail</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tfoot></table>";
 
             return json_encode($table);
         }

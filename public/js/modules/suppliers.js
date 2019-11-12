@@ -1,8 +1,7 @@
 $(document).ready(() => {
 //root
 let form = $('#formSuppliers');
-let tableSuppliers = $('#suppliersTable');
-
+let placeTable = $('#suppliersTable');
 
 
 // Create supplier
@@ -54,10 +53,16 @@ function consult_suppliers() {
 		url: 'http://localhost:8000/suppliers/show',
 		type: 'GET',
 		dataType: 'json',
-		data: {},
+		data: {}
 	})
 	.done(function(data) {
-		tableSuppliers.html(data);
+		placeTable.empty();
+
+		placeTable.html(data);
+
+		placeTable.find('table[id="tabla"]').dataTable({
+			"scrollX": true
+		});
 	})
 	.fail(function() {
 		console.log("error");
