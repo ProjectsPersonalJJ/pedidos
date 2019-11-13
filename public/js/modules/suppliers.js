@@ -3,7 +3,6 @@ $(document).ready(() => {
 let form = $('#formSuppliers');
 let placeTable = $('#suppliersTable');
 
-
 // Create supplier
 	form.on('submit', (event) => {
 		event.preventDefault();
