@@ -72,14 +72,14 @@ class SupplierController extends Controller
                     </thead></tbody>";
             foreach ($suppliers as $supplier) {
                 $table.="<tr>
-                            <td id=\"$supplier->idsupplier\">$supplier->name</td>
+                            <td>$supplier->name</td>
                             <td>$supplier->email</td>
                             <td>"."<span class=\"badge badge-".
                             ($supplier->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
                             ."</td>
                             <td>
                                 <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                <button class=\"btn btn-success btn-sm\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
+                                <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
                             </td>
                         </tr>";
             }
@@ -123,8 +123,17 @@ class SupplierController extends Controller
      * @param  \App\SuppliersModel  $suppliersModel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SuppliersModel $suppliersModel)
+    public function destroy($idsupplier)
     {
-        //
+        $supplier = SuppliersModel::where('idsupplier', $idsupplier)->get('status');
+        // dd($supplier);
+        $status = $supplier[0]->status==1?0:1;
+        SuppliersModel::where('idsupplier', $idsupplier)->update([
+            'status' => $status
+        ]);
+
+        return response()->json([
+            "mensaje" => $supplier
+        ]);
     }
 }

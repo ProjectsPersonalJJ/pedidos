@@ -45,6 +45,7 @@ let placeTable = $('#suppliersTable');
 		
 	});
 
+//  Read Suppliers
 consult_suppliers();
 
 function consult_suppliers() {
@@ -69,4 +70,42 @@ function consult_suppliers() {
 	
 }
 
+
 });
+
+// Changes status
+function changeStatusSupplier(element) {
+	// let message = $(element).data('status')?"":"";
+	let message = "do you wish change status of the supplier ?";
+	bootbox.confirm({
+	    message: message,
+	    buttons: {
+	        confirm: {
+	            label: 'Yes',
+	            className: 'btn-success'
+	        },
+	        cancel: {
+	            label: 'No',
+	            className: 'btn-danger'
+	        }
+	    },
+	    callback: function (result) {
+	        if (result) {
+	        	let token = $('input[name="_token"]').val();
+	        	$.ajax({
+	        		url: 'http://localhost:8000/suppliers/'+ element.value,
+	        		headers: {'X-CSRF-TOKEN': token},
+	        		type: 'DELETE',
+	        		dataType: 'json',
+	        		data: {idsupplier: element.value}
+	        	})
+	        	.done(function(data) {
+	        		console.log(data);
+	        	})
+	        	.fail(function() {
+	        		console.log("error");
+	        	}); 	
+	        }
+	    }
+	});
+}
