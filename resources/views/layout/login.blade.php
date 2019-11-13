@@ -21,17 +21,18 @@
             	<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
 				<div class="feature_inner d-flex justify-content-center align-items-center">
                     <div class="feature_item">
-                        <form class="row form_inputs" method="post" id="" novalidate="novalidate">
+                        <form class="row form_inputs" method="post" action="/" novalidate="novalidate">
+                            @csrf
                             <div class="col-md-12 text-center">
                                 <label class="h1">Pedidos</label>
                             </div>
                             <div class="form-group col-md-12">
                                 <label>User:</label>
-                                <input type="text" class="form-control" id="user" name="user" placeholder="Your number document">
+                                <input type="text" class="form-control" id="user" name="document" placeholder="Your number document">
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Password:</label>
-                                <input type="password" class="form-control" id="pass" name="pass" placeholder="Your password">
+                                <input type="password" class="form-control" id="pass" name="password" placeholder="Your password">
                             </div>
                             <div class="form-group col-md-12">
                                 <button type="submit" value="submit" class="btn submit_btn form-control">Iniciar</button>

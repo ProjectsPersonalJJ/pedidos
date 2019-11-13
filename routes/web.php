@@ -15,9 +15,11 @@ Route::get('/', function () {
     return view('layout.login');
 });
 
+Route::post('/', 'LoginPedidosController@authenticate');
+
 Route::get('/home', function(){
 	return view('modules.home');
-});
+})->middleware('auth');  
 
 Route::get('/users', function(){
 	return view('modules.users');
@@ -40,4 +42,10 @@ Route::get('/products', function(){
 
 Route::get('/suppliers', function(){
 	return view('modules.suppliers');
+});
+
+
+Route::get('/logout', function(){
+	Auth::logout();
+	return view('layout.login');
 });
