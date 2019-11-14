@@ -9,7 +9,6 @@ class SuppliersModel extends Model
     protected $primary_key = 'idsupplier';
     protected $table = 'suppliers';
     public $timestamps = false;
-    
     //Cambiar el nombre de la tabla por defecto a la cual apunta el modelo de laravel por medio de eloquent.
     // protected $table = “autores”;
 

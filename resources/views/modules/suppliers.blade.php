@@ -1,5 +1,7 @@
 @extends('layout.base')
 
+@include('layout.fade_loading');
+
 @section('content')
 
         <section class="home_gallery_area">

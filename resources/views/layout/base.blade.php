@@ -18,7 +18,6 @@
         <!-- <link rel="stylesheet" href="css/responsive.css"> -->
     </head>
     <body>
-        
        <!--================Header Menu Area =================-->
        <header class="header_area">
            <div class="main_menu">
@@ -35,23 +34,9 @@
                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                            <ul class="nav navbar-nav menu_nav ml-auto">
                                <li class="nav-item active"><a class="nav-link" href="/home">Home</a></li> 
-                                @php
-                                    $permissions=Auth::user()->permissions;
-                                @endphp
-                                @for ($i = 0; $i < count($permissions); $i++)
-                                @php
-                                    $module=$permissions[$i]->module->toArray();
-                                @endphp
-                                <li class="nav-item active"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
-                                @endfor
-                                <li class="nav-item submenu dropdown">
-                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Acount&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
-                                    <ul class="dropdown-menu exit">
-                                        <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
-                                    </ul>
-                                </li>
+<!-- acá va lo de camilo -->
                             
-                               <!--
+                               
                                <li class="nav-item"><a class="nav-link" href="users">Users</a></li> 
                                <li class="nav-item submenu dropdown">
                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
@@ -73,7 +58,7 @@
                                        <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
                                    </ul>
                                </li>
-                               <li class="nav-item">&nbsp;</a></li>  -->
+                               <li class="nav-item">&nbsp;</a></li>  
                                <li class="nav-item">&nbsp;</a></li> 
                            </ul>                        
                        </div> 

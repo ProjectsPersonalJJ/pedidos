@@ -79,7 +79,8 @@ class SupplierController extends Controller
                             ."</td>
                             <td>
                                 <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
+                                <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
+                                
                             </td>
                         </tr>";
             }
@@ -89,7 +90,6 @@ class SupplierController extends Controller
                         <th>Status</th>
                         <th>Actions</th>
                     </tfoot></table>";
-
             return json_encode($table);
         }
     }
@@ -125,15 +125,19 @@ class SupplierController extends Controller
      */
     public function destroy($idsupplier)
     {
-        $supplier = SuppliersModel::where('idsupplier', $idsupplier)->get('status');
-        // dd($supplier);
-        $status = $supplier[0]->status==1?0:1;
-        SuppliersModel::where('idsupplier', $idsupplier)->update([
-            'status' => $status
-        ]);
+        try {
+            $supplier = SuppliersModel::where('idsupplier', $idsupplier)->get('status');
+            // dd($supplier);
+            $status = $supplier[0]->status==1?0:1;
+            SuppliersModel::where('idsupplier', $idsupplier)->update([
+                'status' => $status
+            ]);
 
-        return response()->json([
-            "mensaje" => $supplier
-        ]);
+            return response()->json([
+                "mensaje" => $status
+            ]);
+        } catch (Exception $e) {
+            return null;
+        }
     }
 }

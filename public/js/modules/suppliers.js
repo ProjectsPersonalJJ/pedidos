@@ -1,7 +1,9 @@
-$(document).ready(() => {
 //root
 let form = $('#formSuppliers');
 let placeTable = $('#suppliersTable');
+let fade_loading = $('#fade-loading');
+
+$(document).ready(() => {
 
 // Create supplier
 	form.on('submit', (event) => {
@@ -48,6 +50,9 @@ let placeTable = $('#suppliersTable');
 //  Read Suppliers
 consult_suppliers();
 
+});
+
+//  Read Suppliers
 function consult_suppliers() {
 	$.ajax({
 		url: 'http://localhost:8000/suppliers/show',
@@ -66,12 +71,8 @@ function consult_suppliers() {
 	})
 	.fail(function() {
 		console.log("error");
-	});
-	
+	});	
 }
-
-
-});
 
 // Changes status
 function changeStatusSupplier(element) {
@@ -97,13 +98,28 @@ function changeStatusSupplier(element) {
 	        		headers: {'X-CSRF-TOKEN': token},
 	        		type: 'DELETE',
 	        		dataType: 'json',
-	        		data: {idsupplier: element.value}
+	        		data: {idsupplier: element.value},
+	        		beforeSend: () => {
+	        			fade_loading.css('display', 'flex');
+	        		}
 	        	})
 	        	.done(function(data) {
-	        		console.log(data);
+
+	        		if (data.mensaje!=null) {
+	        			fade_loading.css('display', 'none');
+	        			consult_suppliers();
+	        			$.notify({
+	        			//Options
+	        				message: "successful change of status" // estos mensajes se van a sacar de un json
+	        			},{
+	        			//Settings
+	        				type: 'success'
+	        			});
+	        		}
+
 	        	})
-	        	.fail(function() {
-	        		console.log("error");
+	        	.fail(function(error) {
+	        		(error => `Error: ${error}`);
 	        	}); 	
 	        }
 	    }
