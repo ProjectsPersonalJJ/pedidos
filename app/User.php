@@ -10,6 +10,11 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    public function permissions(){
+        return $this->hasMany('App\Permission', 'document', 'document');
+    }
+
+    protected $primaryKey = 'document';
     /**
      * The attributes that are mass assignable.
      *
