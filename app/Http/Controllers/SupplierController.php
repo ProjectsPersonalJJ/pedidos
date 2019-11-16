@@ -60,37 +60,46 @@ class SupplierController extends Controller
     public function show(SuppliersModel $suppliersModel, Request $request)
     {
         if ($request->ajax()) {
+            $suppliers = null;
+            if ($request->all()) {
+                //Send information
+                $suppliers = SuppliersModel::where("idsupplier", $request->idsupplier)->take(1)->get();
 
-            $suppliers = SuppliersModel::all();
+                return $suppliers;
+            }else{
+                //Send Table
+                $suppliers = SuppliersModel::all();
 
-            $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
-            $table.="<thead>
-                        <th>Name</th>
-                        <th>E-mail</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </thead></tbody>";
-            foreach ($suppliers as $supplier) {
-                $table.="<tr>
-                            <td>$supplier->name</td>
-                            <td>$supplier->email</td>
-                            <td>"."<span class=\"badge badge-".
-                            ($supplier->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
-                            ."</td>
-                            <td>
-                                <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
-                                
-                            </td>
-                        </tr>";
+                $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
+                $table.="<thead>
+                            <th>Name</th>
+                            <th>E-mail</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </thead></tbody>";
+                foreach ($suppliers as $supplier) {
+                    $table.="<tr>
+                                <td>$supplier->name</td>
+                                <td>$supplier->email</td>
+                                <td>"."<span class=\"badge badge-".
+                                ($supplier->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
+                                ."</td>
+                                <td>
+                                    <button value=\"$supplier->idsupplier\" onclick=\"editSupplier(this)\" class=\"btn btn-warning btn-sm\"".($supplier->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                    <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
+                                    
+                                </td>
+                            </tr>";
+                }
+                $table.="</tbody><tfoot>
+                            <th>Name</th>
+                            <th>E-mail</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tfoot></table>";
+
+                return json_encode($table);
             }
-            $table.="</tbody><tfoot>
-                        <th>Name</th>
-                        <th>E-mail</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tfoot></table>";
-            return json_encode($table);
         }
     }
 
@@ -100,9 +109,8 @@ class SupplierController extends Controller
      * @param  \App\SuppliersModel  $suppliersModel
      * @return \Illuminate\Http\Response
      */
-    public function edit(SuppliersModel $suppliersModel)
+    public function edit($id)
     {
-        //
     }
 
     /**
@@ -112,9 +120,17 @@ class SupplierController extends Controller
      * @param  \App\SuppliersModel  $suppliersModel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SuppliersModel $suppliersModel)
+    public function update(Request $request, $idsupplier)
     {
-        //
+        if($request->ajax()){
+
+            SuppliersModel::where('idsupplier', $idsupplier)->update([
+                'name' => $request->name,
+                'email' => $request->email
+            ]);
+
+            return $idsupplier;
+        }
     }
 
     /**
