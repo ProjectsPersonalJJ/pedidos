@@ -16,7 +16,25 @@ $(document).ready(() => {
 	form.on('submit', (event) => {
 		event.preventDefault();
 		// Action 1= Create 2=Update
-		actionFormSuppliers();
+		let message = "do you wish execute this action ?";
+		bootbox.confirm({
+		    message: message,
+		    buttons: {
+		        confirm: {
+		            label: 'Yes',
+		            className: 'btn-success'
+		        },
+		        cancel: {
+		            label: 'No',
+		            className: 'btn-danger'
+		        }
+		    },
+		    callback: (result) => {
+		    	if (result) {
+		    		actionFormSuppliers();
+		    	}
+		    }
+		});
 
 	});
 
@@ -25,6 +43,9 @@ $(document).ready(() => {
 		changesButtonSubmit(1);
 		title_form.text("");
 		action = 1;
+		//Errors Fields
+		name.next('small').text("");
+		email.next('small').text("");
 	});
 
 //  Read Suppliers
@@ -40,8 +61,11 @@ function actionFormSuppliers() {
 		type: (action==1?'POST':'PUT'),
 		dataType: 'json',
 		data: form.serialize(),
+		beforeSend: () => {
+			fade_loading_open();
+		}
 	})
-	.done(function(data) {
+	.done((data) => {
 
 		if($.isNumeric(data)){
 			form[0].reset();
@@ -57,19 +81,26 @@ function actionFormSuppliers() {
 		}
 
 	})
-	.fail(function(data) {
+	.fail((data) => {
 
-		console.log(data);
+		//Errors Fields
+		$.map(data.responseJSON.errors, function(element, index) {
+			$('#'+index).next('small').text(element[0]);
+		})
 
 		$.notify({ // Estos objetos se retornaran desde el controlador
 		//Options
-			message: "Create supplier error!!" // estos mensajes se van a sacar de un json
+			message: data.responseJSON.message // estos mensajes se van a sacar de un json
 		},{
 		//Settings
 			type: 'danger'
 		});
 
+	})
+	.always(() => {
+		fade_loading_close();
 	});
+
 }
 
 //  Read Suppliers
@@ -80,7 +111,7 @@ function consult_suppliers() {
 		dataType: 'json',
 		data: {}
 	})
-	.done(function(data) {
+	.done((data) => {
 		placeTable.empty();
 
 		placeTable.html(data);
@@ -89,7 +120,7 @@ function consult_suppliers() {
 			"scrollX": true
 		});
 	})
-	.fail(function() {
+	.fail(() => {
 		console.log("error");
 	});	
 }
@@ -98,6 +129,8 @@ function consult_suppliers() {
 function editSupplier(element) {
 	let idsupplier = $(element).val();
 	let token = $('input[name="_token"]').val();
+
+	form[0].reset();
 
 	$.ajax({
 		url: "http://localhost:8000/suppliers/show",
@@ -108,10 +141,10 @@ function editSupplier(element) {
 			idsupplier: idsupplier
 		},
 		beforeSend : () => {
-			fade_loading.css('display', 'flex');
+			fade_loading_open();
 		}
 	})
-	.done(function(supplier) {
+	.done((supplier) => {
 
 		if (supplier) {
 			title_form.text("(" + supplier[0].name + ")");
@@ -123,11 +156,11 @@ function editSupplier(element) {
 		 		scrollTop: 0
 		 	}, 700);
 		 	action = 2;
-		 	fade_loading.css('display', 'none');
+		 	fade_loading_close();
 		}
 
 	})
-	.fail(function() {
+	.fail(() => {
 		console.log("error");
 	});
 	
@@ -151,6 +184,15 @@ function changesButtonSubmit(action = 0) {
 	}
 }
 
+//Screen fade Loading
+function fade_loading_open() {
+	fade_loading.css('display', 'flex');
+}
+
+function fade_loading_close() {
+	fade_loading.css('display', 'none');
+}
+
 // Changes status
 function changeStatusSupplier(element) {
 	// let message = $(element).data('status')?"":"";
@@ -167,7 +209,7 @@ function changeStatusSupplier(element) {
 	            className: 'btn-danger'
 	        }
 	    },
-	    callback: function (result) {
+	    callback: (result) => {
 	        if (result) {
 	        	let token = $('input[name="_token"]').val();
 	        	$.ajax({
@@ -177,10 +219,10 @@ function changeStatusSupplier(element) {
 	        		dataType: 'json',
 	        		data: {idsupplier: element.value},
 	        		beforeSend: () => {
-	        			fade_loading.css('display', 'flex');
+	        			fade_loading_open();
 	        		}
 	        	})
-	        	.done(function(data) {
+	        	.done((data) => {
 
 	        		if (data.mensaje!=null) {
 	        			fade_loading.css('display', 'none');
@@ -195,8 +237,14 @@ function changeStatusSupplier(element) {
 	        		}
 
 	        	})
-	        	.fail(function(error) {
+	        	.fail((error) => {
+
 	        		(error => `Error: ${error}`);
+
+	        	}).always(()=>{
+
+	        		fade_loading_close();
+
 	        	}); 	
 	        }
 	    }

@@ -42,6 +42,11 @@ class SupplierController extends Controller
 
         if($request->ajax()){
 
+            $request->validate([
+                'name' => 'required|max:45',
+                'email' => 'required|email:rfc|max:45'
+            ]);
+
             $supplier = new SuppliersModel();
             $supplier->name = $request->name;
             $supplier->email = $request->email;
@@ -123,6 +128,11 @@ class SupplierController extends Controller
     public function update(Request $request, $idsupplier)
     {
         if($request->ajax()){
+
+            $request->validate([
+                'name' => 'required|max:45',
+                'email' => 'required|email:rfc|max:45'
+            ]);
 
             SuppliersModel::where('idsupplier', $idsupplier)->update([
                 'name' => $request->name,

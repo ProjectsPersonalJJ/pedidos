@@ -16,10 +16,12 @@
                     <div class="form-group col-md-6">
                         <label for="name">Name Supplier:</label>
                         <input type="text" maxlength="45" class="form-control" id="name" name="name" placeholder="Your name">
+                        <small class="text-danger"></small>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="email">E-mail:</label>
                         <input type="email" maxlength="45" class="form-control" id="email" name="email" placeholder="Your E-mail">
+                        <small class="text-danger"></small>
                     </div>
   
                     <div class=" form-group col-md-6">
