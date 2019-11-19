@@ -69,15 +69,14 @@ function actionFormSuppliers() {
 
 		if($.isNumeric(data)){
 			form[0].reset();
-
+			consult_suppliers();
 			$.notify({ // Estos objetos se retornaran desde el controlador
 			//Options
-				message: "Create supplier success!!" // estos mensajes se van a sacar de un json
+				message: "Create supplier success!!" // estos mensajes se van a sacar de un json o un array asociativo de php
 			},{
 			//Settings
 				type: 'success'
 			});
-
 		}
 
 	})
