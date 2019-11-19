@@ -49,39 +49,8 @@
 	    <section>
 	        <div class="container">
 	            <div class="row">
-	                <div class="col-md-12">
-	                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-	                        <thead>
-	                            <tr>
-	                                <th>ID Prodcut</th>
-	                                <th>Name</th>
-	                                <th>Supplier</th>
-	                                <th>Value</th>
-	                                <th>Actions</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <tr>
-	                                <td>1</td>
-	                                <td>Super Buerger Napolitana</td>
-	                                <td>Edwin Guerra</td>
-	                                <td>$15.000</td>
-	                                <td>
-	                                    <button class="btn btn-warning btn-sm disabled"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-	                                    <button class="btn btn-success btn-sm"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;Active</button>
-	                                </td>
-	                            </tr>
-	                        </tbody>
-	                        <tfoot>
-	                            <tr>
-	                                <th>ID Prodcut</th>
-	                                <th>Name</th>
-	                                <th>Supplier</th>
-	                                <th>Value</th>
-	                                <th>Actions</th>
-	                            </tr>
-	                        </tfoot>
-	                    </table>
+	                <div class="col-md-12" id="place_table">
+
 	                </div>
 	            </div>
 	        </div>

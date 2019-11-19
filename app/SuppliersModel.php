@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SuppliersModel extends Model
 {
-    protected $primary_key = 'idsupplier';
     protected $table = 'suppliers';
+    protected $primaryKey  = 'idsupplier';
     public $timestamps = false;
     
     //Cambiar el nombre de la tabla por defecto a la cual apunta el modelo de laravel por medio de eloquent.
@@ -33,4 +33,9 @@ class SuppliersModel extends Model
     // Si un modelo usa una conexión de base de datos diferente puedes especificarla con:
 
     // protected $connection = 'nombre-conexion';
+
+    // public function products()
+    // {
+    //         return $this->hasMany(ProductsModel::class, 'idproduct');
+    // }
 }

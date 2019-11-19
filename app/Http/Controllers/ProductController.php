@@ -57,9 +57,45 @@ class ProductController extends Controller
      * @param  \App\ProductsModel  $productsModel
      * @return \Illuminate\Http\Response
      */
-    public function show(ProductsModel $productsModel)
+    public function show(ProductsModel $productsModel, Request $request)
     {
-        //
+
+        if ($request->ajax()) {
+            $products = ProductsModel::all();
+
+            $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
+            $table.="<thead>
+                        <th>Supplier</th>
+                        <th>Product</th>
+                        <th>Value</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </thead></tbody>";
+            foreach ($products as $product) {
+                $table.="<tr>
+                            <td>".($product->supplier->name)."</td>
+                            <td>$product->name</td>
+                            <td>$product->value</td>
+                            <td>"."<span class=\"badge badge-".
+                            ($product->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
+                            ."</td>
+                            <td>
+                                <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                <button value=\"$product->idproduct\" data-status=\"$product->status\" class=\"btn btn-success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
+                            </td>
+                        </tr>";
+            }
+            $table.="</tbody><tfoot>
+                        <th>Supplier</th>
+                        <th>Product</th>
+                        <th>Value</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tfoot></table>";
+
+            return json_encode($table);
+        }
+       
     }
 
     /**

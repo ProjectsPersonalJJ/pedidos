@@ -1,7 +1,12 @@
 let action = 1;// 1= create o 2 = Update
 let form = $('#form-products');
+let placetable = $('#place_table');
+
 $(document).ready(function($) {
 	
+	//Consult products
+	consult_products();
+
 	//Create Products
 	form.on('submit', (event) => {
 		event.preventDefault();
@@ -14,6 +19,7 @@ $(document).ready(function($) {
 	});
 });
 
+//
 function actionsProductos() {
 	$.ajax({
 		url: 'http://localhost:8000/products',
@@ -26,7 +32,7 @@ function actionsProductos() {
 	})
 	.done((data) => {
 		form[0].reset();
-		
+
 		$.notify({
 			message: "Create product success"
 		},{
@@ -42,6 +48,25 @@ function actionsProductos() {
 			type: "danger"
 		});
 
+	});
+	
+}
+
+function consult_products() {
+	$.ajax({
+		url: 'http://localhost:8000/products/show',
+		type: 'GET',
+		dataType: 'json'
+	})
+	.done(function(data) {
+		placetable.html(data);
+
+		$("#tabla").DataTable({
+			'scrollX': true
+		});
+	})
+	.fail(function() {
+		console.log("error");
 	});
 	
 }
