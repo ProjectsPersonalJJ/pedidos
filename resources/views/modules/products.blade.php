@@ -1,11 +1,12 @@
 @extends('layout.base')
 
+
 @section('content')
 
 	    <section class="home_gallery_area">
 	        <div class="container">
-	            <form class="row form_inputs" method="post" id="" novalidate="novalidate">
-
+	            <form class="row form_inputs" method="post" id="form-products" novalidate="novalidate">
+					@csrf
 	                <div class="col-md-12 text-center">
 	                    <label class="h1">Form Products</label>
 	                    <hr>
@@ -17,12 +18,11 @@
 	                </div>
 	                <div class="form-group col-md-6">
 	                    <label>Supplier:</label>
-	                    <select class="form-control w-100" id="suppliers">
-	                          <option class="w-100" value="">1</option>
-	                          <option class="w-100" value="">2</option>
-	                          <option class="w-100" value="">3</option>
-	                          <option class="w-100" value="">4</option>
-	                          <option class="w-100" value="">5</option>
+	                    <select class="form-control w-100" id="suppliers" name="supplier">
+	                    	<option class="w-100" value="0">Select...</option>
+	                    	@foreach($suppliers as $supplier)
+								<option class="w-100" value="{{$supplier->idsupplier}}">{{ $supplier->name }}</option>
+	                    	@endforeach
 	                    </select>
 	                </div> 
 
@@ -33,7 +33,8 @@
 	                <div class=" form-group col-md-6">
 	                    <label>Actions</label><br>
 	                    <button type="submit" value="submit" class="btn btn-primary"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;Create</button>
-	                    <a class="btn btn-primary" href="#"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Search</a>
+	                    <button class="btn btn-primary" type="reset" value="reset">
+	                    &times;&nbsp;Reset</button>
 	                    <hr>
 	                </div>                 
 
