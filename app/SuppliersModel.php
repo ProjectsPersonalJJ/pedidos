@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SuppliersModel extends Model
 {
-    protected $primary_key = 'idsupplier';
     protected $table = 'suppliers';
+    protected $primary_key = 'idsupplier';
     public $timestamps = false;
-    
     //Cambiar el nombre de la tabla por defecto a la cual apunta el modelo de laravel por medio de eloquent.
     // protected $table = “autores”;
 
