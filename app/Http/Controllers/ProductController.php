@@ -80,8 +80,8 @@ class ProductController extends Controller
                             ($product->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
                             ."</td>
                             <td>
-                                <button class=\"btn btn-warning btn-sm disabled\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                <button value=\"$product->idproduct\" data-status=\"$product->status\" class=\"btn btn-success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>
+                                <button value=\"$product->idproduct\" onclick=\"editSupplier(this)\" class=\"btn btn-warning btn-sm\"".($product->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                    <button value=\"$product->idproduct\" data-status=\"$product->status\" class=\"btn btn-".($product->status ==1? "danger btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
                             </td>
                         </tr>";
             }
@@ -127,8 +127,16 @@ class ProductController extends Controller
      * @param  \App\ProductsModel  $productsModel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ProductsModel $productsModel)
+    public function destroy($idProduct)
     {
-        //
+       $product = ProductsModel::where('idproduct', $idProduct)->take(1)->get('status');
+       $status = $product[0]->status==1?0:1;
+       ProductsModel::where('idproduct',$idProduct)->update([
+            'status' => $status
+       ]);
+
+       return response()->json([
+            "mensaje" => $product
+       ]); 
     }
 }

@@ -1,5 +1,6 @@
 @extends('layout.base')
 
+@include('layout.fade_loading');
 
 @section('content')
 
