@@ -36,7 +36,6 @@
                                <li class="nav-item active"><a class="nav-link" href="/home">Home</a></li> 
 <!-- acá va lo de camilo -->
                             
-                               
                                <li class="nav-item"><a class="nav-link" href="users">Users</a></li> 
                                <li class="nav-item submenu dropdown">
                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
@@ -116,6 +115,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
               });
             </script>
             @break
+          @case(3)
+            <!-- Main js Products -->
+            <script src="js/modules/products.js"></script>
+            @break;
         @endswitch
     </body>
 </html>
