@@ -49,7 +49,7 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->save();
 
-            return $supplier->id;
+            return $supplier->idsupplier;
         }
     }
 
@@ -128,10 +128,10 @@ class SupplierController extends Controller
 
             $this->validateInformacion($request);
 
-            SuppliersModel::where('idsupplier', $idsupplier)->update([
-                'name' => $request->name,
-                'email' => $request->email
-            ]);
+            $supplier = SuppliersModel::findOrFail($idsupplier);
+            $supplier->name = $request->name;
+            $supplier->email = $request->name;
+            $supplier->save();
 
             return $idsupplier;
         }
@@ -146,8 +146,9 @@ class SupplierController extends Controller
     public function destroy($idsupplier)
     {
         try {
+
             $supplier = SuppliersModel::where('idsupplier', $idsupplier)->get('status');
-            // dd($supplier);
+
             $status = $supplier[0]->status==1?0:1;
             SuppliersModel::where('idsupplier', $idsupplier)->update([
                 'status' => $status
@@ -157,7 +158,7 @@ class SupplierController extends Controller
                 "mensaje" => $status
             ]);
         } catch (Exception $e) {
-            return null;
+            return null;// ocurrio un error
         }
     }
 
