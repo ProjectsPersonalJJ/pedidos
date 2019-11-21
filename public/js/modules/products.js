@@ -21,13 +21,23 @@ $(document).ready(() => {
 		actionsProductos();
 	});
 
+	// reset form
 	form.on('reset', (event) => {
 		//Reiniciar los campos del formulario y los botones
 		action = 1;
 		changesButtonSubmit(action);
 		submit.removeData('idproduct');
 		title_form.text('');
+		messageErrorsClear();
 	});
+
+	//is numeric
+	value.keypress((event) => {
+		if (!$.isNumeric(event.key)) {
+			event.preventDefault();
+		}
+	});
+
 });
 
 //
@@ -55,6 +65,7 @@ function actionsProductos() {
 	    			beforeSend: () =>{
 	    				//Fade - loadion open
 	    				fade_loading_open();
+	    				messageErrorsClear();
 	    			}
 	    		})
 	    		.done((data) => {
@@ -68,7 +79,11 @@ function actionsProductos() {
 	    			//Fade - loadion close
 	    		})
 	    		.fail((error) => {
-	    			console.log(error);
+
+	    			$.map(error.responseJSON.errors, function(element, index) {
+						$('#'+index).next('small').text(element[0]);
+    				})
+
 	    			$.notify({
 	    				message: "Create product error"
 	    			},{
@@ -229,4 +244,10 @@ function fade_loading_open() {
 
 function fade_loading_close() {
 	fade_loding.css('display', 'none');
+}
+
+function messageErrorsClear() {
+	name.next('small').text('');
+	seelectSupplier.next('small').text('');
+	value.next('small').text('');
 }
