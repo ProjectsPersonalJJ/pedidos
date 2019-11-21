@@ -4,6 +4,7 @@ let placeTable = $('#suppliersTable');
 let fade_loading = $('#fade-loading');
 let title_form = $('#title-form');
 let action = 1;
+const fade = new FadeLoading(fade_loading);//Class
 
 //Field inputs
 let name = $('input[id="name"]');
@@ -62,7 +63,7 @@ function actionFormSuppliers() {
 		dataType: 'json',
 		data: form.serialize(),
 		beforeSend: () => {
-			fade_loading_open();
+			fade.fade_loading_open();
 		}
 	})
 	.done((data) => {
@@ -97,7 +98,9 @@ function actionFormSuppliers() {
 
 	})
 	.always(() => {
-		fade_loading_close();
+
+		fade.fade_loading_close();
+
 	});
 
 }
@@ -140,12 +143,13 @@ function editSupplier(element) {
 			idsupplier: idsupplier
 		},
 		beforeSend : () => {
-			fade_loading_open();
+			fade.fade_loading_open();
 		}
 	})
 	.done((supplier) => {
 
 		if (supplier) {
+
 			title_form.text("(" + supplier[0].name + ")");
 		 	name.val(supplier[0].name);
 		 	email.val(supplier[0].email);
@@ -155,12 +159,18 @@ function editSupplier(element) {
 		 		scrollTop: 0
 		 	}, 700);
 		 	action = 2;
-		 	fade_loading_close();
+
 		}
 
 	})
 	.fail(() => {
-		console.log("error");
+
+		console.log("error");//Animate Notify
+
+	}).always(() => {
+
+		fade.fade_loading_close();
+
 	});
 	
 }
@@ -181,15 +191,6 @@ function changesButtonSubmit(action = 0) {
 		submit.html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Update");
 			break;
 	}
-}
-
-//Screen fade Loading
-function fade_loading_open() {
-	fade_loading.css('display', 'flex');
-}
-
-function fade_loading_close() {
-	fade_loading.css('display', 'none');
 }
 
 // Changes status
@@ -218,13 +219,13 @@ function changeStatusSupplier(element) {
 	        		dataType: 'json',
 	        		data: {idsupplier: element.value},
 	        		beforeSend: () => {
-	        			fade_loading_open();
+	        			fade.fade_loading_open();
 	        		}
 	        	})
 	        	.done((data) => {
 
 	        		if (data.mensaje!=null) {
-	        			fade_loading.css('display', 'none');
+
 	        			consult_suppliers();
 	        			$.notify({
 	        			//Options
@@ -238,11 +239,11 @@ function changeStatusSupplier(element) {
 	        	})
 	        	.fail((error) => {
 
-	        		(error => `Error: ${error}`);
+	        		(error => `Error: ${error}`);//Alert Notify
 
 	        	}).always(()=>{
 
-	        		fade_loading_close();
+	        		fade.fade_loading_close();
 
 	        	}); 	
 	        }
