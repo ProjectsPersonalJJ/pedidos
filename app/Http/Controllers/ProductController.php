@@ -41,13 +41,14 @@ class ProductController extends Controller
     {
         //Pendiente la validacion
         if ($request->ajax()) {
+
             $product = new ProductsModel();
             $product->idsupplier = $request->supplier;
             $product->name = $request->nameProduct;
             $product->value = $request->value;
             $product->save();
 
-            return $product->id;//Se va a retornar el mensaje en vez del id
+            return $product->idproduct;//Se va a retornar el mensaje en vez del id
         }
     }
 
@@ -61,39 +62,47 @@ class ProductController extends Controller
     {
 
         if ($request->ajax()) {
-            $products = ProductsModel::all();
+            $product= null;
+            if ($request->all()) {
 
-            $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
-            $table.="<thead>
-                        <th>Supplier</th>
-                        <th>Product</th>
-                        <th>Value</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </thead></tbody>";
-            foreach ($products as $product) {
-                $table.="<tr>
-                            <td>".($product->supplier->name)."</td>
-                            <td>$product->name</td>
-                            <td>$product->value</td>
-                            <td>"."<span class=\"badge badge-".
-                            ($product->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
-                            ."</td>
-                            <td>
-                                <button value=\"$product->idproduct\" onclick=\"editSupplier(this)\" class=\"btn btn-warning btn-sm\"".($product->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                    <button value=\"$product->idproduct\" data-status=\"$product->status\" class=\"btn btn-".($product->status ==1? "danger btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
-                            </td>
-                        </tr>";
+                $product = ProductsModel::findOrFail($request->idproduct);
+
+                return $product;
+            }else{
+                $products = ProductsModel::all();
+
+                $table="<table id=\"tabla\" class=\"table table-striped table-bordered\" style=\"width:100%\">";
+                $table.="<thead>
+                            <th>Supplier</th>
+                            <th>Product</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </thead></tbody>";
+                foreach ($products as $product) {
+                    $table.="<tr>
+                                <td>".($product->supplier->name)."</td>
+                                <td>$product->name</td>
+                                <td>$product->value</td>
+                                <td>"."<span class=\"badge badge-".
+                                ($product->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
+                                ."</td>
+                                <td>
+                                    <button value=\"$product->idproduct\" onclick=\"editProduct(this)\" class=\"btn btn-warning btn-sm\"".($product->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                        <button value=\"$product->idproduct\" class=\"btn btn-".($product->status ==1? "danger btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
+                                </td>
+                            </tr>";
+                }
+                $table.="</tbody><tfoot>
+                            <th>Supplier</th>
+                            <th>Product</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tfoot></table>";
+
+                return json_encode($table);
             }
-            $table.="</tbody><tfoot>
-                        <th>Supplier</th>
-                        <th>Product</th>
-                        <th>Value</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tfoot></table>";
-
-            return json_encode($table);
         }
        
     }
@@ -116,9 +125,21 @@ class ProductController extends Controller
      * @param  \App\ProductsModel  $productsModel
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ProductsModel $productsModel)
+    public function update($idproduct, Request $request)
     {
-        //
+        if($request->ajax()){
+
+            $product = ProductsModel::findOrFail($idproduct);
+            $product->name = $request->nameProduct;
+            $product->idsupplier = $request->supplier;
+            $product->value = $request->value;
+            $product->save();
+
+            return response()->json([
+                'mensaje' => $idproduct
+            ]);
+
+        }
     }
 
     /**

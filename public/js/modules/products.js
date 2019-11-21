@@ -2,8 +2,14 @@ let action = 1;// 1= create o 2 = Update
 let form = $('#form-products');
 let placetable = $('#place_table');
 let fade_loding = $('#fade-loading');
+let title_form = $('#title-form');
+//Field Inputs
+let name = $('input[name="nameProduct"]');
+let seelectSupplier = $('select[name="supplier"]');
+let value = $('input[name="value"]');
+let submit = form.find('button[type="submit"]');
 
-$(document).ready(function($) {
+$(document).ready(() => {
 	
 	//Consult products
 	consult_products();
@@ -17,38 +23,66 @@ $(document).ready(function($) {
 
 	form.on('reset', (event) => {
 		//Reiniciar los campos del formulario y los botones
+		action = 1;
+		changesButtonSubmit(action);
+		submit.removeData('idproduct');
+		title_form.text('');
 	});
 });
 
 //
 function actionsProductos() {
-	$.ajax({
-		url: 'http://localhost:8000/products',
-		type: action==1?'POST':'PUT',
-		dataType: 'json',
-		data: form.serialize(),
-		beforeSend: () =>{
-			//Fade - loadion open
-		}
-	})
-	.done((data) => {
-		form[0].reset();
+	bootbox.confirm({
+	    message: "You wish to execute this action?",
+	    buttons: {
+	        confirm: {
+	            label: 'Yes',
+	            className: 'btn-success'
+	        },
+	        cancel: {
+	            label: 'No',
+	            className: 'btn-danger'
+	        }
+	    },
+	    callback: (result) => {
+	    	if (result) {
 
-		$.notify({
-			message: "Create product success"
-		},{
-			type: "success"
-		});
-		//Fade - loadion close
-	})
-	.fail(() => {
+	    		$.ajax({
+	    			url: 'http://localhost:8000/products'+(action==2?`/${submit.data('idproduct')}`:''),
+	    			type: action==1?'POST':'PUT',
+	    			dataType: 'json',
+	    			data: form.serialize(),
+	    			beforeSend: () =>{
+	    				//Fade - loadion open
+	    				fade_loading_open();
+	    			}
+	    		})
+	    		.done((data) => {
+	    			form[0].reset();
+	    			consult_products();
+	    			$.notify({
+	    				message: "Create product success"
+	    			},{
+	    				type: "success"
+	    			});
+	    			//Fade - loadion close
+	    		})
+	    		.fail((error) => {
+	    			console.log(error);
+	    			$.notify({
+	    				message: "Create product error"
+	    			},{
+	    				type: "danger"
+	    			});
 
-		$.notify({
-			message: "Create product error"
-		},{
-			type: "danger"
-		});
+	    		}).always(() => {
 
+	    			fade_loading_close();
+
+	    		});
+
+	    	}
+	    }
 	});
 	
 }
@@ -70,6 +104,68 @@ function consult_products() {
 		console.log("error");
 	});
 	
+}
+
+function editProduct(element) {
+	let idproduct = element.value;
+	let token = $('input[name="_token"]').val();
+	$.ajax({
+		url: '/products/show',
+		headers: {'X-CSRF-TOKEN': token},
+		type: 'GET',
+		dataType: 'json',
+		data: {
+			idproduct: idproduct
+		},
+		beforeSend: () => {
+			fade_loading_open();
+		}
+	})
+	.done(function(product) {
+
+		if (product) {
+			form[0].reset();
+			action = 2;
+			title_form.text(`(${product.name})`);
+			name.val(product.name);
+			seelectSupplier.find(`option[value="${product.idsupplier}"]`).prop('selected', true);
+			value.val(product.value);
+			submit.data('idproduct', product.idproduct);
+			changesButtonSubmit(action);
+			$('body, html').animate({
+				'scrollTop': 0
+			},700);
+		}
+
+	})
+	.fail(function() {
+
+		console.log("error");
+
+	}).always(() =>{
+
+		fade_loading_close();
+
+	});
+	
+}
+
+//Change button submit 1=Create 2= Update
+function changesButtonSubmit(action = 0) {
+	switch(action){
+		case 1:
+		//
+		submit.removeClass("btn-warning");
+		submit.addClass("btn-primary");
+		submit.html("<i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"></i>&nbsp;Create");
+			break;
+		case 2:
+		//
+		submit.removeClass("btn-primary");
+		submit.addClass("btn-warning");
+		submit.html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Update");
+			break;
+	}
 }
 
 function change_status_product(element) {
