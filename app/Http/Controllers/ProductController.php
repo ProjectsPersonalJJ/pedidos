@@ -42,6 +42,8 @@ class ProductController extends Controller
         //Pendiente la validacion
         if ($request->ajax()) {
 
+            $this->validateInformation($request);
+
             $product = new ProductsModel();
             $product->idsupplier = $request->supplier;
             $product->name = $request->nameProduct;
@@ -129,6 +131,8 @@ class ProductController extends Controller
     {
         if($request->ajax()){
 
+            $this->validateInformation($request);
+
             $product = ProductsModel::findOrFail($idproduct);
             $product->name = $request->nameProduct;
             $product->idsupplier = $request->supplier;
@@ -159,5 +163,15 @@ class ProductController extends Controller
        return response()->json([
             "mensaje" => $product
        ]); 
+    }
+
+    public function validateInformation($request)
+    {
+        $validations = $request->validate([
+            'nameProduct' => 'required|max:45',
+            'suppliers' => 'required|min:1',
+            'value' => 'required|max:100000|min:50|numeric|digits_between:2,6'
+        ]);
+
     }
 }

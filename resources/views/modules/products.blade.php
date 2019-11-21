@@ -15,7 +15,8 @@
 
 	                <div class="form-group col-md-6">
 	                    <label for="name">Name product:</label>
-	                    <input type="text" class="form-control" id="nameProduct" name="nameProduct" placeholder="Name product">
+	                    <input type="text" class="form-control" id="nameProduct" name="nameProduct" placeholder="Name product" maxlength="45">
+	                    <small class="text-danger"></small>
 	                </div>
 	                <div class="form-group col-md-6">
 	                    <label>Supplier:</label>
@@ -25,11 +26,13 @@
 								<option class="w-100" value="{{$supplier->idsupplier}}">{{ $supplier->name }}</option>
 	                    	@endforeach
 	                    </select>
+	                    <small class="text-danger"></small>
 	                </div> 
 
 	                <div class=" form-group col-md-6">
 	                    <label for="value">value:</label>
-	                    <input type="text" class="form-control" id="value" name="value" placeholder="How much this product?">
+	                    <input type="text" class="form-control" id="value" name="value" placeholder="How much this product?" maxlength="6">
+	                    <small class="text-danger"></small>
 	                </div> 
 	                <div class=" form-group col-md-6">
 	                    <label>Actions</label><br>
