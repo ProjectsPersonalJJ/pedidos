@@ -1,39 +1,44 @@
 @extends('layout.base')
 
+@include('layout.fade_loading');
+
 @section('content')
 
 	    <section class="home_gallery_area">
 	        <div class="container">
-	            <form class="row form_inputs" method="post" id="" novalidate="novalidate">
-
+	            <form class="row form_inputs" method="post" id="form-products" novalidate="novalidate">
+					@csrf
 	                <div class="col-md-12 text-center">
-	                    <label class="h1">Form Products</label>
+	                    <label class="h1">Form Products&nbsp;<small id="title-form"></small></label>
 	                    <hr>
 	                </div>
 
 	                <div class="form-group col-md-6">
 	                    <label for="name">Name product:</label>
-	                    <input type="text" class="form-control" id="nameProduct" name="nameProduct" placeholder="Name product">
+	                    <input type="text" class="form-control" id="nameProduct" name="nameProduct" placeholder="Name product" maxlength="45">
+	                    <small class="text-danger"></small>
 	                </div>
 	                <div class="form-group col-md-6">
 	                    <label>Supplier:</label>
-	                    <select class="form-control w-100" id="suppliers">
-	                          <option class="w-100" value="">1</option>
-	                          <option class="w-100" value="">2</option>
-	                          <option class="w-100" value="">3</option>
-	                          <option class="w-100" value="">4</option>
-	                          <option class="w-100" value="">5</option>
+	                    <select class="form-control w-100" id="suppliers" name="supplier">
+	                    	<option class="w-100" value="0">Select...</option>
+	                    	@foreach($suppliers as $supplier)
+								<option class="w-100" value="{{$supplier->idsupplier}}">{{ $supplier->name }}</option>
+	                    	@endforeach
 	                    </select>
+	                    <small class="text-danger"></small>
 	                </div> 
 
 	                <div class=" form-group col-md-6">
 	                    <label for="value">value:</label>
-	                    <input type="text" class="form-control" id="value" name="value" placeholder="How much this product?">
+	                    <input type="text" class="form-control" id="value" name="value" placeholder="How much this product?" maxlength="6">
+	                    <small class="text-danger"></small>
 	                </div> 
 	                <div class=" form-group col-md-6">
 	                    <label>Actions</label><br>
 	                    <button type="submit" value="submit" class="btn btn-primary"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;Create</button>
-	                    <a class="btn btn-primary" href="#"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Search</a>
+	                    <button class="btn btn-primary" type="reset" value="reset">
+	                    &times;&nbsp;Reset</button>
 	                    <hr>
 	                </div>                 
 
@@ -48,39 +53,8 @@
 	    <section>
 	        <div class="container">
 	            <div class="row">
-	                <div class="col-md-12">
-	                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-	                        <thead>
-	                            <tr>
-	                                <th>ID Prodcut</th>
-	                                <th>Name</th>
-	                                <th>Supplier</th>
-	                                <th>Value</th>
-	                                <th>Actions</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <tr>
-	                                <td>1</td>
-	                                <td>Super Buerger Napolitana</td>
-	                                <td>Edwin Guerra</td>
-	                                <td>$15.000</td>
-	                                <td>
-	                                    <button class="btn btn-warning btn-sm disabled"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-	                                    <button class="btn btn-success btn-sm"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;Active</button>
-	                                </td>
-	                            </tr>
-	                        </tbody>
-	                        <tfoot>
-	                            <tr>
-	                                <th>ID Prodcut</th>
-	                                <th>Name</th>
-	                                <th>Supplier</th>
-	                                <th>Value</th>
-	                                <th>Actions</th>
-	                            </tr>
-	                        </tfoot>
-	                    </table>
+	                <div class="col-md-12" id="place_table">
+
 	                </div>
 	            </div>
 	        </div>
