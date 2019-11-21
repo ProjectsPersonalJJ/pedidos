@@ -131,11 +131,7 @@ class ProductController extends Controller
     {
         if($request->ajax()){
 
-<<<<<<< HEAD
             $this->validateInformation($request);
-=======
-            $this->validateInformation();
->>>>>>> b21503a976d9101167b3e31f343c99546486b6e0
 
             $product = ProductsModel::findOrFail($idproduct);
             $product->name = $request->nameProduct;
