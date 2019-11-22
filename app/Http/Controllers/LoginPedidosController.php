@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 
 class LoginPedidosController extends Controller
 {
@@ -13,12 +13,30 @@ class LoginPedidosController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticate(Request $request){
-        $credenciales=$request->only('document', 'password');
-        if(Auth::attempt($credenciales)){
-            //dd(count(Auth::user()->permissions));
-            return redirect()->intended('/home');
+    protected function authenticate(Request $request)
+    {
+        if ($request->ajax()) {
+            $validatedData = Validator::make($request->all(), [
+                'document' => 'required|max:20',
+                'password' => 'required|max:8',
+            ]);
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'errors' => $validatedData->errors(),
+                    'validate' => false
+                ]);
+            }
+            $data = $validatedData->getData();
+            if (Auth::attempt(['document' => $data['document'], 'password' => $data['password']])) {
+                return response()->json([
+                    'auth' => true,
+                    'validate' => true
+                ]);
+            }
+            return response()->json([
+                'auth' => false,
+                'validate' => true
+            ]);
         }
-        return redirect('/');
     }
 }

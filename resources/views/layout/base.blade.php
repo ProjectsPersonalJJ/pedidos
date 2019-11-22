@@ -42,7 +42,7 @@
                                 @php
                                     $module=$permissions[$i]->module->toArray();
                                 @endphp
-                                <li class="nav-item active"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
                                 @endfor
                                 <li class="nav-item submenu dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Acount&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>

@@ -21,7 +21,7 @@
             	<div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background=""></div>
 				<div class="feature_inner d-flex justify-content-center align-items-center">
                     <div class="feature_item">
-                        <form class="row form_inputs" method="post" action="/" novalidate="novalidate">
+                        <form id="formLogin" class="row form_inputs" method="post" novalidate="novalidate">
                             @csrf
                             <div class="col-md-12 text-center">
                                 <label class="h1">Pedidos</label>
@@ -29,14 +29,15 @@
                             <div class="form-group col-md-12">
                                 <label>User:</label>
                                 <input type="text" class="form-control" id="user" name="document" placeholder="Your number document">
+                                <div class="text-danger" name="document"><small><ul></ul></small></div>
                             </div>
                             <div class="form-group col-md-12">
                                 <label>Password:</label>
                                 <input type="password" class="form-control" id="pass" name="password" placeholder="Your password">
+                                <div class="text-danger" name="password"><small><ul></ul></small></div>
                             </div>
                             <div class="form-group col-md-12">
                                 <button type="submit" value="submit" class="btn submit_btn form-control">Iniciar</button>
-                                <div class="text-center text-danger"><small>El usuario o la contraseña es incorrecto.</small></div>
                             </div>
                         </form>
                     </div>
@@ -51,16 +52,6 @@
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="vendors/bootstrap-notify-master/bootstrap-notify.min.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $.notify({
-                    // options
-                    message: 'No se pudo iniciar sesión' 
-                },{
-                    // settings
-                    type: 'danger'
-                });
-            });
-        </script>
+        <script src="js/modules/login.js"></script>
     </body>
 </html>
