@@ -36,15 +36,11 @@ Route::get('/config_orders', function(){
 	return view('modules.config_orders');
 });
 
-
-Route::get('/products', function(){
-	return view('modules.products');
-});
+//Products model
+Route::resource('/products', 'ProductController');
 
 
-Route::get('/suppliers', function(){
-	return view('modules.suppliers');
-});
+Route::resource('/suppliers', 'SupplierController');
 
 
 Route::get('/logout', function(){

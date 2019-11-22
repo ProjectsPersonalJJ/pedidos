@@ -18,7 +18,6 @@
         <!-- <link rel="stylesheet" href="css/responsive.css"> -->
     </head>
     <body>
-        
        <!--================Header Menu Area =================-->
        <header class="header_area">
            <div class="main_menu">
@@ -49,9 +48,7 @@
                                     <ul class="dropdown-menu exit">
                                         <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
                                     </ul>
-                                </li>
-                            
-                               <!--
+                                </li>      
                                <li class="nav-item"><a class="nav-link" href="users">Users</a></li> 
                                <li class="nav-item submenu dropdown">
                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
@@ -73,7 +70,7 @@
                                        <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
                                    </ul>
                                </li>
-                               <li class="nav-item">&nbsp;</a></li>  -->
+                               <li class="nav-item">&nbsp;</a></li>  
                                <li class="nav-item">&nbsp;</a></li> 
                            </ul>                        
                        </div> 
@@ -119,6 +116,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         <script src="vendors/bootbox.locales.min.js"></script>
         <!-- Notify.js -->
         <script src="vendors/bootstrap-notify-master/bootstrap-notify.min.js"></script>
+        <!-- Class -->
+        <script src="js/class/FadeLoading.js"></script>
         <!-- Main Script -->
         @switch($module)
           @case(1)
@@ -131,6 +130,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
               });
             </script>
             @break
+          @case(3)
+            <!-- Main js Products -->
+            <script src="js/modules/products.js"></script>
+            @break;
         @endswitch
     </body>
 </html>
