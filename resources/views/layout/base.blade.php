@@ -33,7 +33,7 @@
                        <!-- Collect the nav links, forms, and other content for toggling -->
                        <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                            <ul class="nav navbar-nav menu_nav ml-auto">
-                               <li class="nav-item active"><a class="nav-link" href="/home">Home</a></li> 
+                               <li class="nav-item"><a class="nav-link" href="/home">Home</a></li> 
                                 @php
                                     $permissions=Auth::user()->permissions;
                                 @endphp
@@ -44,6 +44,13 @@
                                 <li class="nav-item"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
                                 @endfor
                                 <li class="nav-item submenu dropdown">
+                                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}&nbsp;{{Auth::user()->last_name}}&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
+                                        <ul class="dropdown-menu exit">
+                                            <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
+                                        </ul>
+                                </li>
+                           
+                                <!--<li class="nav-item submenu dropdown">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Acount&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
                                     <ul class="dropdown-menu exit">
                                         <li class="nav-item"><a class="nav-link" href="/logout">Exit</a></li>
@@ -71,7 +78,7 @@
                                    </ul>
                                </li>
                                <li class="nav-item">&nbsp;</a></li>  
-                               <li class="nav-item">&nbsp;</a></li> 
+                               <li class="nav-item">&nbsp;</a></li> -->
                            </ul>                        
                        </div> 
                    </div>
@@ -124,11 +131,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             <script src="js/modules/suppliers.js"></script> 
             @break
           @case(2)
-            <script type="text/javascript">
-              $('#example').DataTable({
-                "scrollX":true
-              });
-            </script>
+            <script src="js/modules/users.js"></script>
             @break
           @case(3)
             <!-- Main js Products -->

@@ -27,7 +27,7 @@
                                 <label class="h1">Pedidos</label>
                             </div>
                             <div class="form-group col-md-12">
-                                <label>User:</label>
+                                <label>Document:</label>
                                 <input type="text" class="form-control" id="user" name="document" placeholder="Your number document">
                                 <div class="text-danger" name="document"><small><ul></ul></small></div>
                             </div>
@@ -37,20 +37,23 @@
                                 <div class="text-danger" name="password"><small><ul></ul></small></div>
                             </div>
                             <div class="form-group col-md-12">
-                                <button type="submit" value="submit" class="btn submit_btn form-control">Iniciar</button>
+                                <button type="submit" value="submit" class="btn submit_btn form-control">Login</button>
                             </div>
                         </form>
-                    </div>
+                        <div style="text-align: right;"><a href="/signin">Sign in</a></div>
+                    </div>                    
                 </div>
             </div>
         </section>
         <!--================End Home Banner Area =================-->
-
+        
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/popper.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <!-- Class -->
+        <script src="js/class/FadeLoading.js"></script>
         <script src="vendors/bootstrap-notify-master/bootstrap-notify.min.js"></script>
         <script src="js/modules/login.js"></script>
     </body>
