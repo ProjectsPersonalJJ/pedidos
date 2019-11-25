@@ -1,67 +1,74 @@
 @extends('layout.base')
 
+@include('layout.fade_loading')
+
 @section('content')
 
     <section class="home_gallery_area">
         <div class="container">
-            <form class="row form_inputs" method="post" novalidate="novalidate">
-
+            <form id="formCreateUser" class="row form_inputs" method="post" novalidate="novalidate">
+                @csrf
                 <div class="col-md-12 text-center">
-                    <label class="h1">Form Users</label>
+                    <label class="h1">Users form&nbsp;<small id="title-form"></small></label>
                     <hr>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="document">Document:</label>
-                    <input type="number" min="0" class="form-control" id="document" name="document" placeholder="Your number document">
+                    <input type="text" class="form-control" id="document" name="document" placeholder="Number document">
+                    <div class="text-danger" name="document"><small><ul></ul></small></div>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="name">Name:</label>
-                    <input type="text" class="form-control" id="name" name="name" placeholder="Your name">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                    <div class="text-danger" name="name"><small><ul></ul></small></div>
                 </div>
-
                 <div class="form-group col-md-6">
                     <label for="lastName">Last Name:</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Your last name">
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name">
+                    <div class="text-danger" name="lastName"><small><ul></ul></small></div>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="brith">Birth:</label>
-                    <input type="date" class="form-control" id="brith" name="brith" placeholder="Your brith">
+                    <label for="birth">Birth date:</label>
+                    <input type="date" class="form-control" id="birth" name="birthDate" placeholder="Brith date">
+                    <div class="text-danger" name="birthDate"><small><ul></ul></small></div>
                 </div>
-
                 <div class="form-group col-md-4">
-                    <label>Sexo:</label>
+                    <label>Gender:</label>
                     <div class="gender">
-                        <label><input type="radio" class="" id="femenino" value="0" name="sexo">F</label>
-                        <label><input type="radio" class="" id="masculino" value="1" name="sexo">M</label>
+                        <label><input type="radio" id="femenino" value="0" name="gender">F</label>
+                        <label><input type="radio" id="masculino" value="1" name="gender">M</label>
                     </div>
+                    <div class="text-danger" name="gender"><small><ul></ul></small></div>
                 </div>
                 <div class="form-group col-md-8">
                     <label for="email">E-mail:</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Your E-mail">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                    <div class="text-danger" name="email"><small><ul></ul></small></div>
                 </div>
-
                 <div class="form-group col-md-6">
                     <label>Type User</label>
-                    <select class="form-control w-100" id="type-users">
-                          <option class="w-100" value="">1</option>
-                          <option class="w-100" value="">2</option>
-                          <option class="w-100" value="">3</option>
-                          <option class="w-100" value="">4</option>
-                          <option class="w-100" value="">5</option>
+                    <select class="form-control w-100" id="typeUser" name="typeUser">
+                        <option class="w-100" value="">Select...</option>
+	                    @foreach($typeUsers as $typeUser)
+							<option class="w-100" value="{{$typeUser->idtype_user}}">{{ $typeUser->name_type_user}}</option>
+	                    @endforeach
                     </select>
+                    <div class="text-danger" name="typeUser"><small><ul></ul></small></div>
                 </div>   
                 <div class=" form-group col-md-6">
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Your password">
+                    <div class="text-danger" name="password"><small><ul></ul></small></div>
                 </div>  
 
                 <div class=" form-group col-md-6">
                     <label for="password-confirm">Confirm password:</label>
-                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password">
+                    <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Confirm your password">
+                    <div class="text-danger" name="password_confirmation"><small><ul></ul></small></div>
                 </div>   
                 <div class=" form-group col-md-6">
                     <label>Actions</label><br>
-                    <button type="button" value="submit" class="btn btn-primary" data-toggle="modal" data-target="#modalConfirm"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;Create</button>
+                    <button type="submit" value="submit" class="btn btn-primary"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;Create</button>
                     <a class="btn btn-primary" href="#"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Search</a>
                     <hr>
                 </div>                 
@@ -73,63 +80,11 @@
         </div>
     </section>
 <!-- Esto va en otra vista cuando se presione el boton "Search" -->
-    <section>
+<section id="ReadUsers">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>Document</th>
-                                <th>Name</th>
-                                <th>Last name</th>
-                                <th>Genered</th>
-                                <th>Brith</th>
-                                <th>Type User</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1216727816</td>
-                                <td>Juan David</td>
-                                <td>Marulanda Paniagua</td>
-                                <td>M</td>
-                                <td>30/11/1998</td>
-                                <td>Admin</td>
-                                <td>
-                                    <button class="btn btn-warning btn-sm disabled"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-                                    <button class="btn btn-success btn-sm"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i>&nbsp;Active</button>
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;Permissions</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1216727816</td>
-                                <td>Juan David</td>
-                                <td>Marulanda Paniagua</td>
-                                <td>M</td>
-                                <td>30/11/1998</td>
-                                <td>Client</td>
-                                <td>
-                                  <button class="btn btn-warning btn-sm"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-                                  <button class="btn btn-danger btn-sm"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>&nbsp;Delete</button>
-                                  <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalPermissions"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;Permissions</button>
-
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Document</th>
-                                <th>Name</th>
-                                <th>Last name</th>
-                                <th>Genered</th>
-                                <th>Brith</th>
-                                <th>Type User</th>
-                                <th>Actions</th>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="col-md-12" id="usersTable">
+                    
                 </div>
             </div>
         </div>

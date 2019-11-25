@@ -35,7 +35,6 @@ class LoginController extends Controller
             }
             $data = $validatedData->getData();
             if (Auth::attempt(['document' => $data['document'], 'password' => $data['password']])) {
-                dd(Auth::user()->typeUser);
                 return response()->json([
                     'auth' => true,
                     'validate' => true
@@ -57,7 +56,7 @@ class LoginController extends Controller
     {
         if ($request->ajax()) {
             $validatedData = Validator::make($request->all(), [
-                'document' => 'required|unique:users|max:20',
+                'document' => 'required|digits_between:1,20|numeric|unique:users',
                 'name' => 'required|max:45',
                 'lastName' => 'required|max:45',
                 'email' => 'required|max:45|email',

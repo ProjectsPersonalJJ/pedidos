@@ -39,9 +39,9 @@
                                 @endphp
                                 @for ($i = 0; $i < count($permissions); $i++)
                                 @php
-                                    $module=$permissions[$i]->module->toArray();
+                                    $option=$permissions[$i]->module->toArray();
                                 @endphp
-                                <li class="nav-item"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{$option['url']}}">{{$option['name']}}</a></li>
                                 @endfor
                                 <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}&nbsp;{{Auth::user()->last_name}}&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
