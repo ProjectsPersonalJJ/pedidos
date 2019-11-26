@@ -32,9 +32,7 @@ Route::get('/orders', function(){
 });
 
 
-Route::get('/config_orders', function(){
-	return view('modules.config_orders');
-});
+Route::resource('/config_orders', 'ConfigOrderController');
 
 //Products model
 Route::resource('/products', 'ProductController');
