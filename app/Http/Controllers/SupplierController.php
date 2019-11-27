@@ -42,17 +42,14 @@ class SupplierController extends Controller
 
         if($request->ajax()){
 
-            $request->validate([
-                'name' => 'required|max:45',
-                'email' => 'required|email:rfc|max:45'
-            ]);
+            $this->validateInformacion($request);
 
             $supplier = new SuppliersModel();
             $supplier->name = $request->name;
             $supplier->email = $request->email;
             $supplier->save();
 
-            return $supplier->id;
+            return $supplier->idsupplier;
         }
     }
 
@@ -91,7 +88,7 @@ class SupplierController extends Controller
                                 ."</td>
                                 <td>
                                     <button value=\"$supplier->idsupplier\" onclick=\"editSupplier(this)\" class=\"btn btn-warning btn-sm\"".($supplier->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                    <button value=\"$supplier->idsupplier\" data-status=\"$supplier->status\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
+                                    <button value=\"$supplier->idsupplier\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
                                     
                                 </td>
                             </tr>";
@@ -129,15 +126,12 @@ class SupplierController extends Controller
     {
         if($request->ajax()){
 
-            $request->validate([
-                'name' => 'required|max:45',
-                'email' => 'required|email:rfc|max:45'
-            ]);
+            $this->validateInformacion($request);
 
-            SuppliersModel::where('idsupplier', $idsupplier)->update([
-                'name' => $request->name,
-                'email' => $request->email
-            ]);
+            $supplier = SuppliersModel::findOrFail($idsupplier);
+            $supplier->name = $request->name;
+            $supplier->email = $request->name;
+            $supplier->save();
 
             return $idsupplier;
         }
@@ -152,8 +146,9 @@ class SupplierController extends Controller
     public function destroy($idsupplier)
     {
         try {
+
             $supplier = SuppliersModel::where('idsupplier', $idsupplier)->get('status');
-            // dd($supplier);
+
             $status = $supplier[0]->status==1?0:1;
             SuppliersModel::where('idsupplier', $idsupplier)->update([
                 'status' => $status
@@ -163,7 +158,15 @@ class SupplierController extends Controller
                 "mensaje" => $status
             ]);
         } catch (Exception $e) {
-            return null;
+            return null;// ocurrio un error
         }
+    }
+
+    public function validateInformacion($request)
+    {
+        $request->validate([
+            'name' => 'required|max:45',
+            'email' => 'required|email:rfc|max:45'
+        ]);
     }
 }

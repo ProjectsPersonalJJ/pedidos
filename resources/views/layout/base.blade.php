@@ -103,6 +103,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         <script src="vendors/bootbox.locales.min.js"></script>
         <!-- Notify.js -->
         <script src="vendors/bootstrap-notify-master/bootstrap-notify.min.js"></script>
+        <!-- Class -->
+        <script src="js/class/FadeLoading.js"></script>
         <!-- Main Script -->
         @switch($module)
           @case(1)
