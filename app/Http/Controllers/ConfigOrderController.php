@@ -84,7 +84,11 @@ class ConfigOrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // dd($request);
+        $request->validate([
+            "quantityOrders" => "required|min:0|max:9",
+            "timebegine" => "required",
+            "timeend" => "required"
+        ]);
         //Pending validation fields
         $file = __DIR__."\ConfigOrders\configOrders.json";
         // Create fiel an write estructure json
