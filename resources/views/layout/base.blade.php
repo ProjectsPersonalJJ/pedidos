@@ -126,6 +126,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             <script src="js/class/FadeLoading.js"></script>
             <script src="js/modules/config_orders.js"></script>
             @break;
+          @case(5)
+            <!-- Main js Products -->
+            <script src="js/modules/orders.js"></script>
+            @break;
         @endswitch
     </body>
 </html>

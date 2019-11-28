@@ -27,9 +27,7 @@ Route::get('/users', function(){
 	]);
 });
 
-Route::get('/orders', function(){
-	return view('modules.orders');
-});
+Route::resource('/orders', 'OrderController');
 
 
 Route::resource('/config_orders', 'ConfigOrderController');

@@ -1,7 +1,6 @@
 @extends('layout.base')
 
 @section('content')
-
         <!--================Form Users =================-->
         <section class="home_gallery_area">
             <div class="container">
@@ -15,11 +14,10 @@
                     <div class="form-group col-md-6">
                         <label for="suppliers">Supplier:</label>
                         <select class="form-control w-100" id="suppliers">
-                              <option class="w-100" value="">1</option>
-                              <option class="w-100" value="">2</option>
-                              <option class="w-100" value="">3</option>
-                              <option class="w-100" value="">4</option>
-                              <option class="w-100" value="">5</option>
+                            <option class="w-100" value="0">select...</option>
+                            @foreach($suppliers as $supplier)
+                                <option class="w-100" value="{{ $supplier->idsupplier }}">{{ $supplier->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group col-md-6 text-center">
