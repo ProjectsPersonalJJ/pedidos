@@ -12,27 +12,27 @@
                     <label class="h1">Users form&nbsp;<small id="title-form"></small></label>
                     <hr>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3 hideOrShow">
                     <label for="document">Document:</label>
                     <input type="text" class="form-control" id="document" name="document" placeholder="Number document">
                     <div class="text-danger" name="document"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label for="name">Name:</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Name">
                     <div class="text-danger" name="name"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label for="lastName">Last Name:</label>
                     <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last name">
                     <div class="text-danger" name="lastName"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label for="birth">Birth date:</label>
                     <input type="date" class="form-control" id="birth" name="birthDate" placeholder="Brith date">
                     <div class="text-danger" name="birthDate"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-4">
+                <div class="form-group col-md-3">
                     <label>Gender:</label>
                     <div class="gender">
                         <label><input type="radio" id="femenino" value="0" name="gender">F</label>
@@ -40,12 +40,12 @@
                     </div>
                     <div class="text-danger" name="gender"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-3">
                     <label for="email">E-mail:</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                     <div class="text-danger" name="email"><small><ul></ul></small></div>
                 </div>
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label>Type User</label>
                     <select class="form-control w-100" id="typeUser" name="typeUser">
                         <option class="w-100" value="">Select...</option>
@@ -55,13 +55,13 @@
                     </select>
                     <div class="text-danger" name="typeUser"><small><ul></ul></small></div>
                 </div>   
-                <div class=" form-group col-md-6">
+                <div class="form-group col-md-3">
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="Your password">
                     <div class="text-danger" name="password"><small><ul></ul></small></div>
                 </div>  
 
-                <div class=" form-group col-md-6">
+                <div class=" form-group col-md-3">
                     <label for="password-confirm">Confirm password:</label>
                     <input type="password" class="form-control" id="confirmPassword" name="password_confirmation" placeholder="Confirm your password">
                     <div class="text-danger" name="password_confirmation"><small><ul></ul></small></div>
@@ -69,9 +69,10 @@
                 <div class=" form-group col-md-6">
                     <label>Actions</label><br>
                     <button type="submit" value="submit" class="btn btn-primary"><i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;Create</button>
-                    <a class="btn btn-primary" href="#"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Search</a>
+                    <button type="reset" value="reset" id="rest" class="btn btn-primary"><i class="fa fa-times" aria-hidden="true"></i>&nbsp;Clear</button>
                     <hr>
-                </div>                 
+                </div>
+                                
 
                 <!-- <div class="form-group col-md-12">
                     <button type="submit" value="submit" class="btn submit_btn form-control">Iniciar</button>

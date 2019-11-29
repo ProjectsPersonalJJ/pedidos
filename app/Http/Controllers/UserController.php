@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         return view('modules.users', [
             "module" => 2,
-            "typeUsers"=>TypeUserModel::all()
+            "typeUsers" => TypeUserModel::all()
         ]);
     }
 
@@ -46,7 +46,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
-            $validatedData = $this->validateInformacion($request);
+            $validatedData = Validator::make($request->all(), [
+                'document' => 'required|digits_between:1,20|numeric|unique:users',
+                'name' => 'required|max:45',
+                'lastName' => 'required|max:45',
+                'email' => 'required|max:45|email',
+                'birthDate' => 'required',
+                'password' => 'required|confirmed|max:8',
+                'gender' => 'required|in:1,0'
+            ]);
+
             if ($validatedData->fails()) {
                 return response()->json([
                     'errors' => $validatedData->errors(),
@@ -63,7 +72,7 @@ class UserController extends Controller
             $user->birth = $data['birthDate'];
             $user->password = Hash::make($data['password']);
             $user->idtype_user = $data['typeUser'];
-            $user->status='1';
+            $user->status = '1';
             $user->save();
 
             return response()->json([
@@ -84,8 +93,8 @@ class UserController extends Controller
             $users = null;
             if ($request->all()) {
                 //Send information
-                $users = User::where("iduser", $request->iduser)->take(1)->get();
-
+                //$users = User::where("iduser", $request->iduser)->take(1)->get();
+                $users = User::find($request->document);
                 return $users;
             } else {
                 //Send Table
@@ -153,9 +162,41 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $document)
     {
-        //
+        $validatedData = Validator::make($request->all(), [
+                'name' => 'required|max:45',
+                'lastName' => 'required|max:45',
+                'email' => 'required|max:45|email',
+                'birthDate' => 'required',
+                'password' => 'confirmed|max:8',
+                'gender' => 'required|in:1,0'
+            ]);
+        if ($validatedData->fails()) {
+            return response()->json([
+                'errors' => $validatedData->errors(),
+                'validate' => false
+            ]);
+        }
+        $data = $validatedData->getData();
+        $user = User::find($document);
+        if ($user != null) {
+            $user->name = $data['name'];
+            $user->last_name = $data['lastName'];
+            $user->gender = $data['gender'] == '1' ? 'M' : 'F';
+            $user->email = $data['email'];
+            $user->birth = $data['birthDate'];
+            $user->password = Hash::make($data['password']);
+            $user->idtype_user = $data['typeUser'];
+            $user->save();
+
+            return response()->json([
+                'validate' => true
+            ]);
+        }
+        return response()->json([
+            'validate' => false
+        ]);
     }
 
     /**
@@ -164,21 +205,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($document)
     {
-        //
-    }
-
-    public function validateInformacion($request){
-        return Validator::make($request->all(), [
-            'document' => 'required|digits_between:1,20|numeric|unique:users',
-            'name' => 'required|max:45',
-            'lastName' => 'required|max:45',
-            'email' => 'required|max:45|email',
-            'birthDate' => 'required',
-            'password' => 'required|confirmed|max:8',
-            'gender' => 'required|in:1,0',
-            'typeUser' => 'required'
+        $user = User::find($document);
+        if ($user != null) {
+            $user->status = ($user->status == "1") ? "0" : "1";
+            $user->save();
+            return response()->json([
+                'response' => true
+            ]);
+        }
+        return response()->json([
+            'response' => false
         ]);
     }
 }

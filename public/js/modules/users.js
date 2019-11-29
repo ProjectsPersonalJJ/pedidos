@@ -6,8 +6,8 @@ let title_form = $('#title-form');
 let action = 1;
 const fade = new FadeLoading(fade_loading); //Class
 //Field inputs
-let name = $('input[id="name"]');
-let email = $('input[id="email"]');
+/*let name = $('input[id="name"]');
+let email = $('input[id="email"]');*/
 let submit = form.find('button[type="submit"]');
 
 function validateFalse(array) {
@@ -55,13 +55,16 @@ $(document).ready(() => {
         });
     });
     //reset form
+    
     form.on('reset', () => {
         changesButtonSubmit(1);
         title_form.text("");
+        $('#typeUser option').removeAttr("selected");
+        //$('#typeUser option[value=""]').attr('selected', true);
         action = 1;
         //Errors Fields
-        name.next('small').text("");
-        email.next('small').text("");
+        clearMessageUserForm();
+        showOrHideElements();
     });
     //  Read Users
     consult_users();
@@ -88,14 +91,21 @@ function actionFormUsers() {
                 //Settings
                 type: 'success'
             });
-        }else{
+        } else {
             clearMessageUserForm();
             validateFalse(data.errors);
+            $.notify({ // Estos objetos se retornaran desde el controlador
+                //Options
+                message: 'Error: create user fail.' // estos mensajes se van a sacar de un json
+            }, {
+                //Settings
+                type: 'danger'
+            });
         }
     }).fail((error) => {
         $.notify({ // Estos objetos se retornaran desde el controlador
             //Options
-            message: 'Error: no se pudo relizar la acción.' // estos mensajes se van a sacar de un json
+            message: 'Error: create user fail.' // estos mensajes se van a sacar de un json
         }, {
             //Settings
             type: 'danger'
@@ -121,35 +131,57 @@ function consult_users() {
         errorServer(error);
     });
 }
+
+function showOrHideElements(){
+    if(action==2){
+        $('.hideOrShow').hide();
+        $('#cancelEdit').show();
+    }else{
+        form[0].reset();
+        $('.hideOrShow').show();
+        $('#cancelEdit').hide();
+    }
+} 
 //Edit
-function editSupplier(element) {
-    let idsupplier = $(element).val();
+function editUser(element) {
+    let document = $(element).val();
     let token = $('input[name="_token"]').val();
     form[0].reset();
     $.ajax({
-        url: "http://localhost:8000/suppliers/show",
+        url: "/users/show",
         headers: {
             "X-CSRF-TOKEN": token
         },
         type: 'GET',
         dataType: 'json',
         data: {
-            idsupplier: idsupplier
+            document: document
         },
         beforeSend: () => {
             fade.fade_loading_open();
         }
-    }).done((supplier) => {
-        if (supplier) {
-            title_form.text("(" + supplier[0].name + ")");
-            name.val(supplier[0].name);
-            email.val(supplier[0].email);
-            submit.data("idsupplier", supplier[0].idsupplier);
+    }).done((user) => {
+        if (user) {
+            
+            title_form.text("(" + user.name + " " + user.last_name + ")");
+            $('input[id="name"]').val(user.name);
+            $('input[id="lastName"]').val(user.last_name);
+            $('input[id="birth"]').val(user.birth);
+            //$('input[id="birth"]').val(new Date(user.birth).toISOString().substr(0,10));
+            if(user.gender=='F'){
+                $('input[id="femenino"]').prop("checked", true);
+            }else{
+                $('input[id="masculino"]').prop("checked", true);
+            }
+            $('input[id="email"]').val(user.email);
+            $('#typeUser option[value='+ user.idtype_user +']').attr("selected", true);
+            submit.data("document", user.document);
             changesButtonSubmit(2);
             $('html ,body').animate({
                 scrollTop: 0
             }, 700);
             action = 2;
+            showOrHideElements();
         }
     }).fail((error) => {
         errorServer(error);
@@ -175,9 +207,9 @@ function changesButtonSubmit(action = 0) {
     }
 }
 // Changes status
-function changeStatusSupplier(element) {
+function changeStatusUser(element) {
     // let message = $(element).data('status')?"":"";
-    let message = "do you wish change status of the supplier ?";
+    let message = "do you wish change status of the user ?";
     bootbox.confirm({
         message: message,
         buttons: {
@@ -194,20 +226,20 @@ function changeStatusSupplier(element) {
             if (result) {
                 let token = $('input[name="_token"]').val();
                 $.ajax({
-                    url: 'http://localhost:8000/suppliers/' + element.value,
+                    url: '/users/' + element.value,
                     headers: {
                         'X-CSRF-TOKEN': token
                     },
                     type: 'DELETE',
                     dataType: 'json',
                     data: {
-                        idsupplier: element.value
+                        document: element.value
                     },
                     beforeSend: () => {
                         fade.fade_loading_open();
                     }
                 }).done((data) => {
-                    if (data.mensaje != null) {
+                    if (data.response) {
                         consult_users();
                         $.notify({
                             //Options
@@ -215,6 +247,14 @@ function changeStatusSupplier(element) {
                         }, {
                             //Settings
                             type: 'success'
+                        });
+                    } else {
+                        $.notify({
+                            //Options
+                            message: "fail change of status" // estos mensajes se van a sacar de un json
+                        }, {
+                            //Settings
+                            type: 'danger'
                         });
                     }
                 }).fail((error) => {
@@ -224,7 +264,7 @@ function changeStatusSupplier(element) {
                 });
             }
         }
-        
+
     });
 
 }
