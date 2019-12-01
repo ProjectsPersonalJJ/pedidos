@@ -11,21 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('layout.login');
-});
+Route::get('/', 'LoginController@index');
 
-Route::post('/', 'LoginPedidosController@authenticate');
+Route::post('/', 'LoginController@authenticate');
+
+Route::get('/signin', 'LoginController@signIn');
+
+Route::post('/signin', 'LoginController@store');
 
 Route::get('/home', function(){
-	return view('modules.home');
+	return view('modules.home', ['module'=>0]);
 })->middleware('auth');  
 
-Route::get('/users', function(){
-	return view('modules.users',[
-		"module"=>2
-	]);
-});
+Route::resource('/users', 'UserController');
 
 Route::resource('/orders', 'OrderController');
 
