@@ -165,13 +165,13 @@ class UserController extends Controller
     public function update(Request $request, $document)
     {
         $validatedData = Validator::make($request->all(), [
-                'name' => 'required|max:45',
-                'lastName' => 'required|max:45',
-                'email' => 'required|max:45|email',
-                'birthDate' => 'required',
-                'password' => 'confirmed|max:8',
-                'gender' => 'required|in:1,0'
-            ]);
+            'name' => 'required|max:45',
+            'lastName' => 'required|max:45',
+            'email' => 'required|max:45|email',
+            'birthDate' => 'required',
+            'password' => 'confirmed|max:8',
+            'gender' => 'required|in:1,0'
+        ]);
         if ($validatedData->fails()) {
             return response()->json([
                 'errors' => $validatedData->errors(),
@@ -186,7 +186,9 @@ class UserController extends Controller
             $user->gender = $data['gender'] == '1' ? 'M' : 'F';
             $user->email = $data['email'];
             $user->birth = $data['birthDate'];
-            $user->password = Hash::make($data['password']);
+            if ($data['password'] != "") {
+                $user->password = Hash::make($data['password']);
+            }
             $user->idtype_user = $data['typeUser'];
             $user->save();
 

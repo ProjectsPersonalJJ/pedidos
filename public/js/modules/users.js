@@ -82,21 +82,21 @@ function actionFormUsers() {
     }).done((data) => {
         if (data.validate) {
             clearMessageUserForm();
-            form[0].reset();
             consult_users();
             $.notify({ // Estos objetos se retornaran desde el controlador
                 //Options
-                message: "Create user success!!" // estos mensajes se van a sacar de un json o un array asociativo de php
+                message: action==1?"Create user success!!":"Update user success!!" // estos mensajes se van a sacar de un json o un array asociativo de php
             }, {
                 //Settings
                 type: 'success'
             });
+            form[0].reset();
         } else {
             clearMessageUserForm();
             validateFalse(data.errors);
             $.notify({ // Estos objetos se retornaran desde el controlador
                 //Options
-                message: 'Error: create user fail.' // estos mensajes se van a sacar de un json
+                message: 'Error: '+action==1?'create user fail.':'update user fail.' // estos mensajes se van a sacar de un json
             }, {
                 //Settings
                 type: 'danger'

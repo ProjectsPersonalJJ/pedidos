@@ -81,9 +81,8 @@ class LoginController extends Controller
             $user->password = Hash::make($data['password']);
             //Tipo cliente
             $user->idtype_user = 2;
+            $user->status='1';
             $user->save();
-
-            Auth::attempt(['document' => $data['document'], 'password' => $data['password']]);
             
             return response()->json([
                 'validate' => true
