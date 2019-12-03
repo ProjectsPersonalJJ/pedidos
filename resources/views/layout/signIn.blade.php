@@ -73,6 +73,7 @@
                                 <button type="submit" value="submit" class="btn submit_btn form-control">Sign in</button>
                             </div>
                         </form>
+                        <div style="text-align: right;"><a href="/">Back</a></div>
                     </div>                    
                 </div>
             </div>

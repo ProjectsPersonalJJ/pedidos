@@ -84,7 +84,7 @@ $(document).ready(() => {
         })
             .done(function (data) {
                 if (data.validate == true) {
-                    window.location.href = "/home";
+                    window.location.href = "/";
                     fade.fade_loading_close();
                 } else {
                     fade.fade_loading_close();

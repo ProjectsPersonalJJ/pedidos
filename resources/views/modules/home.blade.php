@@ -6,7 +6,8 @@
 <section class="home_gallery_area p_120">
     <div class="container">
         <div class="main_title headShake">
-            <h2>Sistema de pedidos</h2>
+            <h3>Bienvenido tu rol es:&nbsp;{{Auth::user()->typeUser->toArray()['name_type_user']}}</h3>
+            <h2>Sistema de pedidos</h2>            
             <p>Es un sistema que se encarga especificamente de la gestion de los pedidos de alimentación de todos los usuarios del sistema para facilitar al maximo este proceso y veneficiar a todas las personas implicitas en este proceso...</p>
         </div>
     </div>

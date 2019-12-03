@@ -35,7 +35,6 @@ class LoginController extends Controller
             }
             $data = $validatedData->getData();
             if (Auth::attempt(['document' => $data['document'], 'password' => $data['password']])) {
-                dd(Auth::user()->typeUser);
                 return response()->json([
                     'auth' => true,
                     'validate' => true
@@ -57,7 +56,7 @@ class LoginController extends Controller
     {
         if ($request->ajax()) {
             $validatedData = Validator::make($request->all(), [
-                'document' => 'required|unique:users|max:20',
+                'document' => 'required|digits_between:1,20|numeric|unique:users',
                 'name' => 'required|max:45',
                 'lastName' => 'required|max:45',
                 'email' => 'required|max:45|email',
@@ -82,9 +81,8 @@ class LoginController extends Controller
             $user->password = Hash::make($data['password']);
             //Tipo cliente
             $user->idtype_user = 2;
+            $user->status='1';
             $user->save();
-
-            Auth::attempt(['document' => $data['document'], 'password' => $data['password']]);
             
             return response()->json([
                 'validate' => true
