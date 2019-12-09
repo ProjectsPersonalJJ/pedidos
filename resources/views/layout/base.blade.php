@@ -35,14 +35,13 @@
                            <ul class="nav navbar-nav menu_nav ml-auto">
                                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li> 
                                 @php
-                                    $permissions=Auth::user()->permissions;
+                                    $permissions=session()->get('permissions');
                                 @endphp
-                                @for ($i = 0; $i < count($permissions); $i++)
-                                @php
-                                    $option=$permissions[$i]->module->toArray();
-                                @endphp
-                                <li class="nav-item"><a class="nav-link" href="{{$option['url']}}">{{$option['name']}}</a></li>
-                                @endfor
+                                @foreach ($permissions as $key => $value)
+                                <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
+                                @endforeach
+                                
+                                
                                 <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}&nbsp;{{Auth::user()->last_name}}&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
                                         <ul class="dropdown-menu exit">
@@ -132,6 +131,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             @break
           @case(2)
             <script src="js/modules/users.js"></script>
+            <script src="js/modules/permissions.js"></script>
             @break
           @case(3)
             <!-- Main js Products -->

@@ -55,7 +55,7 @@ $(document).ready(() => {
         });
     });
     //reset form
-    
+
     form.on('reset', () => {
         changesButtonSubmit(1);
         title_form.text("");
@@ -80,27 +80,37 @@ function actionFormUsers() {
             fade.fade_loading_open();
         }
     }).done((data) => {
-        if (data.validate) {
-            clearMessageUserForm();
-            consult_users();
+        if (data.authorize == false) {
             $.notify({ // Estos objetos se retornaran desde el controlador
                 //Options
-                message: action==1?"Create user success!!":"Update user success!!" // estos mensajes se van a sacar de un json o un array asociativo de php
-            }, {
-                //Settings
-                type: 'success'
-            });
-            form[0].reset();
-        } else {
-            clearMessageUserForm();
-            validateFalse(data.errors);
-            $.notify({ // Estos objetos se retornaran desde el controlador
-                //Options
-                message: 'Error: '+action==1?'create user fail.':'update user fail.' // estos mensajes se van a sacar de un json
+                message: 'Error: ' + data.message
             }, {
                 //Settings
                 type: 'danger'
             });
+        } else {
+            if (data.validate) {
+                clearMessageUserForm();
+                consult_users();
+                $.notify({ // Estos objetos se retornaran desde el controlador
+                    //Options
+                    message: action == 1 ? "Create user success!!" : "Update user success!!" // estos mensajes se van a sacar de un json o un array asociativo de php
+                }, {
+                    //Settings
+                    type: 'success'
+                });
+                form[0].reset();
+            } else {
+                clearMessageUserForm();
+                validateFalse(data.errors);
+                $.notify({ // Estos objetos se retornaran desde el controlador
+                    //Options
+                    message: 'Error: ' + action == 1 ? 'create user fail.' : 'update user fail.' // estos mensajes se van a sacar de un json
+                }, {
+                    //Settings
+                    type: 'danger'
+                });
+            }
         }
     }).fail((error) => {
         $.notify({ // Estos objetos se retornaran desde el controlador
@@ -132,16 +142,16 @@ function consult_users() {
     });
 }
 
-function showOrHideElements(){
-    if(action==2){
+function showOrHideElements() {
+    if (action == 2) {
         $('.hideOrShow').hide();
         $('#cancelEdit').show();
-    }else{
+    } else {
         form[0].reset();
         $('.hideOrShow').show();
         $('#cancelEdit').hide();
     }
-} 
+}
 //Edit
 function editUser(element) {
     let document = $(element).val();
@@ -162,19 +172,19 @@ function editUser(element) {
         }
     }).done((user) => {
         if (user) {
-            
+
             title_form.text("(" + user.name + " " + user.last_name + ")");
             $('input[id="name"]').val(user.name);
             $('input[id="lastName"]').val(user.last_name);
             $('input[id="birth"]').val(user.birth);
             //$('input[id="birth"]').val(new Date(user.birth).toISOString().substr(0,10));
-            if(user.gender=='F'){
+            if (user.gender == 'F') {
                 $('input[id="femenino"]').prop("checked", true);
-            }else{
+            } else {
                 $('input[id="masculino"]').prop("checked", true);
             }
             $('input[id="email"]').val(user.email);
-            $('#typeUser option[value='+ user.idtype_user +']').attr("selected", true);
+            $('#typeUser option[value=' + user.idtype_user + ']').attr("selected", true);
             submit.data("document", user.document);
             changesButtonSubmit(2);
             $('html ,body').animate({

@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\Permissions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\TypeUserModel;
+use App\Permission;
+use App\OptionPermissionModel;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('permissions:Users,0')->only('index');
+        $this->middleware('permissions:Users,1')->only('store');
+        $this->middleware('permissions:Users,3')->only('update');
+        $this->middleware('permissions:Users,4')->only('destroy');
     }
     /**
      * Display a listing of the resource.
@@ -23,7 +30,8 @@ class UserController extends Controller
     {
         return view('modules.users', [
             "module" => 2,
-            "typeUsers" => TypeUserModel::all()
+            "typeUsers" => TypeUserModel::all(),
+            "optionUser" => session()->get('permissions')['Users']['options']
         ]);
     }
 
@@ -89,6 +97,7 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
+        $options = session()->get('permissions')['Users']['options'];
         if ($request->ajax()) {
             $users = null;
             if ($request->all()) {
@@ -121,10 +130,9 @@ class UserController extends Controller
                                 <td>$user->email</td>
                                 <td>" . "<span class=\"badge badge-" . ($user->status == 1 ? "success\">Active</span>" : "danger\">Desactive</span>")
                         . "</td>
-                                <td>
-                                    <button value=\"$user->document\" onclick=\"editUser(this)\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                    <button value=\"$user->document\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") . "
-                                    <button class=\"btn btn-primary btn-sm\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i>&nbsp;Permissions</button>
+                                <td>" . (in_array(3, $options) ? "<button value=\"$user->document\" onclick=\"editUser(this)\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>" : "")
+                        . (in_array(4, $options) ? "<button value=\"$user->document\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") : "")
+                        . "<button value=\"$user->document\" class=\"btn btn-primary btn-sm\" onclick=\"getPermissions(this)\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i>&nbsp;Permissions</button>
                                 </td>
                             </tr>";
                 }
@@ -220,5 +228,39 @@ class UserController extends Controller
         return response()->json([
             'response' => false
         ]);
+    }
+
+    public function getPermissions(Request $request)
+    {
+        $permissions = $this->getPermissionsUser($request->document);
+
+        return response()->json([
+            'response' => $permissions
+        ]);
+    }
+
+    public function savePermissions(Request $request)
+    { }
+
+    protected function getPermissionsUser($document)
+    {
+        $permissions = Permission::where('document', $document)->where('status', '1')->get();
+        $userPermissions = [];
+        if (count($permissions) > 0) {
+            for ($i = 0; $i < count($permissions); $i++) {
+                $module = $permissions[$i]->module->toArray();
+                $permission = [];
+                $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
+                $userOptions = [];
+                for ($k = 0; $k < count($options); $k++) {
+                    $userOptions = Arr::prepend($userOptions, $options[$k]->idoption);
+                }
+                $permission = Arr::add($permission, 'options', $userOptions);
+                $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
+            }
+        }else{
+            //consultar por tipo de usuario
+        }
+        return $userPermissions;
     }
 }

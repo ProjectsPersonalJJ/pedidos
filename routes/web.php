@@ -11,19 +11,35 @@
 |
 */
 
-Route::get('/', 'LoginController@index');
+Route::middleware('guest')->group(function(){
 
-Route::post('/', 'LoginController@authenticate');
+	Route::get('/', 'LoginController@index');
 
-Route::get('/signin', 'LoginController@signIn');
+	Route::post('/', 'LoginController@authenticate');
 
-Route::post('/signin', 'LoginController@store');
+	Route::get('/signin', 'LoginController@signIn');
 
-Route::get('/home', function(){
-	return view('modules.home', ['module'=>0]);
-})->middleware('auth');  
+	Route::post('/signin', 'LoginController@store');
 
-Route::resource('/users', 'UserController');
+});
+
+Route::middleware('auth')->group(function(){
+
+	Route::get('/home', function(){
+		return view('modules.home', ['module'=>0, 'authorize'=>true]);
+	});
+
+	Route::resource('/users', 'UserController');
+
+	Route::get('/permissions', 'UserController@getPermissions');
+
+	Route::get('/logout', function(){
+		Auth::logout();
+		return view('layout.login');
+	});
+});
+
+
 
 Route::get('/orders', function(){
 	return view('modules.orders');
@@ -39,8 +55,5 @@ Route::resource('/products', 'ProductController');
 Route::resource('/suppliers', 'SupplierController');
 
 
-Route::get('/logout', function(){
-	Auth::logout();
-	return view('layout.login');
-});
+
 

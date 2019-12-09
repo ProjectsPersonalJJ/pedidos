@@ -3,7 +3,7 @@
 @include('layout.fade_loading')
 
 @section('content')
-
+@if(in_array(1,$optionUser))
     <section class="home_gallery_area">
         <div class="container">
             <form id="formCreateUser" class="row form_inputs" method="post" novalidate="novalidate">
@@ -80,6 +80,9 @@
             </form>
         </div>
     </section>
+@endif
+
+@if(in_array(2,$optionUser))
 <!-- Esto va en otra vista cuando se presione el boton "Search" -->
 <section id="ReadUsers">
         <div class="container">
@@ -89,7 +92,8 @@
                 </div>
             </div>
         </div>
-    </section>
+</section>
+@endif
     <!-- ========================= Modal Permissions ==================================== -->
      <div class="modal fade" id="modalPermissions" role="dialog">
          <div class="modal-dialog modal-lg">
@@ -100,7 +104,8 @@
              </div>
              <div class="modal-body">
                 <!--  -->
-                <form class="" method="POST" action="" novalidate="novalidate">
+                <form class="" method="POST" novalidate="novalidate">
+                    @csrf
                     <div class="row">
                         <div class="card-group">
                           <div class="card border-bottom-0 border-top-0">
@@ -170,23 +175,23 @@
                           <div class="card border-bottom-0 border-top-0">
                             <div class="card-body">
                                 <section id="CardUsers">
-                                    <h5 class="card-title">Users&nbsp;<input type="checkbox" id="exampleCheck1"><small class="text-muted">all</small></h5>
+                                    <h5 class="card-title">Users&nbsp;<input value="userCheckBox" class="allCheckBox" type="checkbox" id="UsersAll"><small class="text-muted">all</small></h5>
                                     <div class="container">
-                                      <div class="row">
+                                      <div class="row userCheckBox">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="UsersCreate" name="UsersCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="UsersRead" name="UsersRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="UsersUpdate" name="UsersUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="UsersDelete" name="UsersDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div><br>
@@ -231,23 +236,23 @@
                                     </div>
                                 </section><br>
                                 <section id="CardProducts">
-                                    <h5 class="card-title">Products&nbsp;<input type="checkbox" id="exampleCheck1"><small class="text-muted">all</small></h5>
+                                    <h5 class="card-title">Products&nbsp;<input value="productCheckBox" class="allCheckBox" type="checkbox" id="ProductsAll"><small class="text-muted">all</small></h5>
                                     <div class="container">
-                                        <div class="row">
+                                        <div class="row productCheckBox">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="ProductsCreate" name="ProductsCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="ProductsRead" name="ProductSRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="ProductsUpdate" name="ProductsUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="ProductsDelete" name="ProductsDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div>

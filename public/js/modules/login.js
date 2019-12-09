@@ -39,7 +39,7 @@ $(document).ready(() => {
                         clearMessage();
                         $.notify({
                             // options
-                            message: 'Documento o contraseña incorrecta.'
+                            message: data.message
                         }, {
                             // settings
                             type: 'danger'
