@@ -27,6 +27,7 @@ Route::resource('/users', 'UserController');
 
 Route::resource('/orders', 'OrderController');
 
+Route::post('/orders/pullProductsBySupplier', 'OrderController@pullProductsBySupplier');
 
 Route::resource('/config_orders', 'ConfigOrderController');
 

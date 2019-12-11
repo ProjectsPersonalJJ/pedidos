@@ -39,9 +39,9 @@
                                 @endphp
                                 @for ($i = 0; $i < count($permissions); $i++)
                                 @php
-                                    $module=$permissions[$i]->module->toArray();
+                                    $moduleMenu=$permissions[$i]->module->toArray();
                                 @endphp
-                                <li class="nav-item"><a class="nav-link" href="{{$module['url']}}">{{$module['name']}}</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{{$moduleMenu['url']}}">{{$moduleMenu['name']}}</a></li>
                                 @endfor
                                 <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}&nbsp;{{Auth::user()->last_name}}&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
@@ -139,7 +139,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             @break;
           @case(4)
           <!-- Main js Config Orders -->
-            <script src="js/class/FadeLoading.js"></script>
             <script src="js/modules/config_orders.js"></script>
             @break;
           @case(5)

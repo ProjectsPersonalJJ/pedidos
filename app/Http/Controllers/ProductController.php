@@ -169,7 +169,7 @@ class ProductController extends Controller
     {
         $validations = $request->validate([
             'nameProduct' => 'required|max:45',
-            'suppliers' => 'required|min:1',
+            'supplier' => 'required|min:1',
             'value' => 'required|max:100000|min:50|numeric|digits_between:2,6'
         ]);
 

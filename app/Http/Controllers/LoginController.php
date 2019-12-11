@@ -35,7 +35,7 @@ class LoginController extends Controller
             }
             $data = $validatedData->getData();
             if (Auth::attempt(['document' => $data['document'], 'password' => $data['password']])) {
-                dd(Auth::user()->typeUser);
+                // dd(Auth::user()->typeUser);
                 return response()->json([
                     'auth' => true,
                     'validate' => true
