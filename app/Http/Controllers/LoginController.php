@@ -35,7 +35,7 @@ class LoginController extends Controller
             $data = $validatedData->getData();
             $user = User::find($data['document']);
             if ($user != null) {
-                if($user->status=='1'){
+                if ($user->status == '1') {
                     if (Auth::attempt(['document' => $data['document'], 'password' => $data['password']])) {
                         $this->getPermissions();
                         return response()->json([
@@ -63,21 +63,24 @@ class LoginController extends Controller
         }
     }
 
-    protected function getPermissions(){
-        $permissions=Permission::where('document', Auth::user()->document)->where('status', '1')->get();
-        $userPermissions=[];
-        for ($i=0; $i < count($permissions); $i++) {
-            $module=$permissions[$i]->module->toArray();
-            $permission=['url'=>$module['url']];
-            $options=OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
-            $userOptions=[];
-            for ($k=0; $k < count($options); $k++) { 
-                $userOptions=Arr::prepend($userOptions,$options[$k]->idoption);
+    protected function getPermissions()
+    {
+        $permissions = Permission::where('document', Auth::user()->document)->where('status', '1')->get();
+        $userPermissions = [];
+        for ($i = 0; $i < count($permissions); $i++) {
+            $module = $permissions[$i]->module->toArray();
+            $permission = ['url' => $module['url']];
+            $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
+            $userOptions = [];
+            for ($k = 0; $k < count($options); $k++) {
+                $userOptions = Arr::prepend($userOptions, $options[$k]->idoption);
             }
-            $permission=Arr::add($permission,'options',$userOptions);
-            $userPermissions=Arr::add($userPermissions,$module['name'],$permission);
+            if (count($options) > 0) {
+                $permission = Arr::add($permission, 'options', $userOptions);
+                $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
+            }
         }
-        session(['permissions'=>$userPermissions]);
+        session(['permissions' => $userPermissions]);
     }
 
     protected function signIn(Request $request)

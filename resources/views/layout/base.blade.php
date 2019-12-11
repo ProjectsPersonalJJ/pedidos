@@ -38,7 +38,9 @@
                                     $permissions=session()->get('permissions');
                                 @endphp
                                 @foreach ($permissions as $key => $value)
-                                <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
+                                    @if($key != 'Permissions' && $key != 'Home')
+                                        <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
+                                    @endif
                                 @endforeach
                                 
                                 

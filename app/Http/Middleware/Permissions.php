@@ -33,5 +33,6 @@ class Permissions
                 ]);
             }
         }
+        return back();
     }
 }

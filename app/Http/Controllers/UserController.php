@@ -97,7 +97,8 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $options = session()->get('permissions')['Users']['options'];
+        $permissions = session()->get('permissions');
+        $options = $permissions['Users']['options'];
         if ($request->ajax()) {
             $users = null;
             if ($request->all()) {
@@ -130,10 +131,10 @@ class UserController extends Controller
                                 <td>$user->email</td>
                                 <td>" . "<span class=\"badge badge-" . ($user->status == 1 ? "success\">Active</span>" : "danger\">Desactive</span>")
                         . "</td>
-                                <td>" . (in_array(3, $options) ? "<button value=\"$user->document\" onclick=\"editUser(this)\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>" : "")
-                        . (in_array(4, $options) ? "<button value=\"$user->document\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") : "")
-                        . "<button value=\"$user->document\" class=\"btn btn-primary btn-sm\" onclick=\"getPermissions(this)\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i>&nbsp;Permissions</button>
-                                </td>
+                                <td>" . (in_array(3, $options) ? "<button value=\"$user->document\" onclick=\"editUser(this)\" data-toggle=\"tooltip\" title=\"Edit\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>" : "")
+                        . (in_array(4, $options) ? "&nbsp;<button value=\"$user->document\" data-toggle=\"tooltip\" title=\"Delete\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i></button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i></button>") : "")
+                        . (array_key_exists('Permissions', $permissions) ? "&nbsp;<button value=\"$user->document\" data-toggle=\"tooltip\" title=\"Permissions\" class=\"btn btn-primary btn-sm\" onclick=\"getPermissions(this)\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i></button>" : "") .
+                        "</td>
                             </tr>";
                 }
                 $table .= "</tbody><tfoot>
@@ -240,11 +241,14 @@ class UserController extends Controller
     }
 
     public function savePermissions(Request $request)
-    { }
+    { 
+        dd($request);
+    }
 
     protected function getPermissionsUser($document)
     {
         $permissions = Permission::where('document', $document)->where('status', '1')->get();
+        //dd($permissions);
         $userPermissions = [];
         if (count($permissions) > 0) {
             for ($i = 0; $i < count($permissions); $i++) {
@@ -258,7 +262,7 @@ class UserController extends Controller
                 $permission = Arr::add($permission, 'options', $userOptions);
                 $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
             }
-        }else{
+        } else {
             //consultar por tipo de usuario
         }
         return $userPermissions;

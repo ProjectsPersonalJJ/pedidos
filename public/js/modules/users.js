@@ -30,6 +30,9 @@ function clearMessageUserForm() {
 }
 
 $(document).ready(() => {
+    fade.fade_loading_open();
+    $('[data-toggle="tooltip"]').tooltip();
+
     // Create user
     form.on('submit', (event) => {
         event.preventDefault();
@@ -139,6 +142,8 @@ function consult_users() {
         });
     }).fail((error) => {
         errorServer(error);
+    }).always(() => {
+        fade.fade_loading_close();
     });
 }
 

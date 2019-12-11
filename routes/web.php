@@ -11,7 +11,7 @@
 |
 */
 
-Route::middleware('guest')->group(function(){
+Route::middleware('guest')->group(function () {
 
 	Route::get('/', 'LoginController@index');
 
@@ -20,20 +20,21 @@ Route::middleware('guest')->group(function(){
 	Route::get('/signin', 'LoginController@signIn');
 
 	Route::post('/signin', 'LoginController@store');
-
 });
 
-Route::middleware('auth')->group(function(){
+Route::middleware('auth')->group(function () {
 
-	Route::get('/home', function(){
-		return view('modules.home', ['module'=>0, 'authorize'=>true]);
+	Route::get('/home', function () {
+		$permissions = session()->get('permissions');
+		return view('modules.home', ['module' => 0, 'optionHome' => (array_key_exists('Home', $permissions) ? $permissions['Home']['options'] : [])]);
 	});
 
 	Route::resource('/users', 'UserController');
 
 	Route::get('/permissions', 'UserController@getPermissions');
+	Route::post('/permissions', 'UserController@savePermissions');
 
-	Route::get('/logout', function(){
+	Route::get('/logout', function () {
 		Auth::logout();
 		return view('layout.login');
 	});
@@ -41,7 +42,7 @@ Route::middleware('auth')->group(function(){
 
 
 
-Route::get('/orders', function(){
+Route::get('/orders', function () {
 	return view('modules.orders');
 });
 
@@ -53,7 +54,3 @@ Route::resource('/products', 'ProductController');
 
 
 Route::resource('/suppliers', 'SupplierController');
-
-
-
-

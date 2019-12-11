@@ -104,155 +104,163 @@
              </div>
              <div class="modal-body">
                 <!--  -->
-                <form class="" method="POST" novalidate="novalidate">
+                <form id="formUpdatePermissions" method="POST" novalidate="novalidate">
                     @csrf
                     <div class="row">
                         <div class="card-group">
                           <div class="card border-bottom-0 border-top-0">
                             <div class="card-body">
                                 <section id="CardHome">
-                                    <h5 class="card-title">Home&nbsp;<input type="checkbox" id="exampleCheck1"><small class="text-muted">all</small></h5>
-                                    <div class="container">
+                                    <h5 class="card-title">Home&nbsp;<input value="Home" type="checkbox" id="HomeAll" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
+                                    <div class="container" id="Home">
                                       <div class="row">
                                           <label class="h6">Day Orders:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="dayOrders" name="dayOrders">
                                               <label>Read</label>
                                           </div>
                                       </div>
                                       <div class="row">
                                           <label class="h6">Products by suppliers:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="productsBySuppliers" name="productsBySuppliers">
                                               <label>Read</label>
                                           </div>
                                       </div>
                                     </div> 
                                 </section><br>
                                 <section id="CardOrders">
-                                    <h5 class="card-title">Orders&nbsp;<input type="checkbox" id="exampleCheck1"><small class="text-muted">all</small></h5>
-                                    <div class="container">
+                                    <h5 class="card-title">Orders&nbsp;<input value="Orders" id="OrdersAll" onclick="checkBoxAll(this)" type="checkbox"><small class="text-muted">all</small></h5>
+                                    <div class="container" id="Orders">
                                       <div class="row">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="OrdersCreate" name="OrdersCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" value="" onclick="checkBoxRead(this,'Orders')" id="OrdersRead" name="OrdersRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this,'Orders')" id="OrdersUpdate" name="OrdersUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this, Orders)" id="OrdersDelete" name="OrdersDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div><br>
                                       <div class="row">
                                           <label class="h6">Settlement:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="OrdersSettlement" name="OrdersSettlement">
                                               <label>Read</label>
-                                          </div>
-                                      </div>
-                                      <div class="row">
-                                          <label class="h6">Config Orders:</label>
-                                          <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
-                                              <label>Read</label>
-                                          </div>
-                                          <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
-                                              <label>Update</label>
                                           </div>
                                       </div>
                                     </div>
+                                    <section id="CardConfigOrders">
+                                        <h5 class="card-title">Config Orders:&nbsp;<input value="OrdersConfigurations" id="OrdersConfigurationsAll" onclick="checkBoxAll(this)" type="checkbox"><small class="text-muted">all</small></h5>
+                                        <label class="h6"></label>
+                                        <div class="container">
+                                            <div class="row" id="OrdersConfigurations">
+                                                <div class="col-md-12">
+                                                    <input type="checkbox" value="" onclick="checkBoxRead(this,'OrdersConfigurations')" id="OrdersConfigurationsRead" name="OrdersConfigurationsRead">
+                                                    <label>Read</label>
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this,'OrdersConfigurations')" id="OrdersConfigurationsUpdate" name="OrdersConfigurationsUpdate">
+                                                    <label>Update</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                 </section>
                             </div>
                           </div>
                           <div class="card border-bottom-0 border-top-0">
                             <div class="card-body">
                                 <section id="CardUsers">
-                                    <h5 class="card-title">Users&nbsp;<input value="userCheckBox" class="allCheckBox" type="checkbox" id="UsersAll"><small class="text-muted">all</small></h5>
+                                    <h5 class="card-title">Users&nbsp;<input value="Users" id="UsersAll" type="checkbox" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
                                     <div class="container">
-                                      <div class="row userCheckBox">
+                                      <div class="row" id="Users">
                                           <div class="col-md-12">
                                               <input type="checkbox" id="UsersCreate" name="UsersCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="UsersRead" name="UsersRead">
+                                              <input type="checkbox" onclick="checkBoxRead(this,'Users')" id="UsersRead" name="UsersRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="UsersUpdate" name="UsersUpdate">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersUpdate" name="UsersUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="UsersDelete" name="UsersDelete">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersDelete" name="UsersDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div><br>
-                                      <div class="row">
-                                          <label class="h6">Permissions:</label>
-                                          <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
-                                              <label>Read</label>
-                                          </div>
-                                          <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
-                                              <label>Update</label>
-                                          </div>
-                                      </div>
                                     </div>
+                                </section>
+                                <section id="CardPermissions">
+                                        <h5 class="card-title">Permissions&nbsp;<input value="Permissions" id="PermissionsAll" type="checkbox" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
+                                        <div class="container">
+                                          <div class="row" id="Permissions">
+                                              <div class="col-md-12">
+                                                  <input type="checkbox" value="" onclick="checkBoxRead(this, 'Permissions')" id="PermissionsRead" name="PermissionsRead">
+                                                  <label>Read</label>
+                                              </div>
+                                              <div class="col-md-12">
+                                                  <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this, 'Permissions')" id="PermissionsUpdate" name="PermissionsUpdate">
+                                                  <label>Update</label>
+                                              </div>
+                                          </div><br>
+                                        </div>
                                 </section>
                             </div>
                           </div>
                           <div class="card border-bottom-0 border-top-0">
                             <div class="card-body">
                                 <section id="CardSuppliers">
-                                    <h5 class="card-title">Suppliers&nbsp;<input type="checkbox" id="exampleCheck1"><small class="text-muted">all</small></h5>
+                                    <h5 class="card-title">Suppliers&nbsp;<input value="Suppliers" type="checkbox" id="SuppliersAll" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
                                     <div class="container">
-                                        <div class="row">
+                                        <div class="row" id="Suppliers">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" id="SuppliersCreate" name="SuppliersCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" onclick="checkBoxRead(this, 'Suppliers')" id="SuppliersRead" name="SuppliersRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersUpdate" name="SuppliersUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="" name="">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersDelete" name="SuppliersDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div>
                                     </div>
                                 </section><br>
                                 <section id="CardProducts">
-                                    <h5 class="card-title">Products&nbsp;<input value="productCheckBox" class="allCheckBox" type="checkbox" id="ProductsAll"><small class="text-muted">all</small></h5>
+                                    <h5 class="card-title">Products&nbsp;<input value='Products' id="ProductsAll" type="checkbox" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
                                     <div class="container">
-                                        <div class="row productCheckBox">
+                                        <div class="row" id="Products">
                                           <div class="col-md-12">
                                               <input type="checkbox" id="ProductsCreate" name="ProductsCreate">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="ProductsRead" name="ProductSRead">
+                                              <input type="checkbox" onclick="checkBoxRead(this,'Products')" id="ProductsRead" name="ProductSRead">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="ProductsUpdate" name="ProductsUpdate">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsUpdate" name="ProductsUpdate">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="ProductsDelete" name="ProductsDelete">
+                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsDelete" name="ProductsDelete">
                                               <label>Delete</label>
                                           </div>
                                       </div>
@@ -260,13 +268,15 @@
                                 </section>
                             </div>
                           </div>
+                          
                         </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Save</button>
                     </div>
                 </form>
                 <!--  -->
              </div>
              <div class="modal-footer">
-                <button class="btn btn-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Save</button>
+                
              </div>
            </div>
          </div>
