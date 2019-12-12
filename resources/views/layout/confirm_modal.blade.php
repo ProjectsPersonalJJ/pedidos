@@ -13,6 +13,7 @@
                             <div class="col-md-12">
                                 <label>Password:</label>
                                 <input class="form-control" type="password" name="password" id="" placeholder="Insert your password">
+                                <small class="text-danger"></small>
                             </div>
                         </div>
                     </div>                            

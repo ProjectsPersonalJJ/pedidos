@@ -68,7 +68,7 @@ $(document).ready(() => {
 		tittle.text('');
 	});
 
-	confirm.on('submit', function(event) {// pending
+	confirm.on('submit', function(event) {
 		event.preventDefault();
 		$.ajax({
 			url: '/orders',
@@ -77,17 +77,56 @@ $(document).ready(() => {
 			dataType: 'json',
 			data: {
 				order: order,
-				user: $(this).find('input[name="password"]').val()
+				password: $(this).find('input[name="password"]').val()
 			} ,
 			beforeSend: () =>{
 				fade.fade_loading_open();
 			}
 		})
-		.done(function(data) {
-			console.log("success");
+		.done(function(data) {// pending
+			//Esconder el modal y limpiar el formulario
+			//Mostrar mensaje de que se registro correctamente la orden
+			//Limpiar el formulario y la tabla de pedidos
+			//Eliminar la variable de order global
+			//Limpiar el small de errores
+			if ($.isNumeric(data.message)) {
+				// Order register
+				console.log('Order Register');
+				$.notify({ // Estos objetos se retornaran desde el controlador
+				    //Options
+				    message: `Order Register successful` // estos mensajes se van a sacar de un json
+				}, {
+				    //Settings
+				    type: 'success'
+				});
+
+			}else{
+				// Incorrect Password
+				$.notify({ // Estos objetos se retornaran desde el controlador
+				    //Options
+				    message: `incorrec password` // estos mensajes se van a sacar de un json
+				}, {
+				    //Settings
+				    type: 'danger'
+				});
+
+			}
+
 		})
 		.fail(function(error) {
-			console.log("error");
+
+			$.map(error.responseJSON.errors, function(element, index) {
+			    $('#' + index).next('small').text(element[0]);
+			});
+
+			$.notify({ // Estos objetos se retornaran desde el controlador
+			    //Options
+			    message: `Error: ${error.responseJSON.message}` // estos mensajes se van a sacar de un json
+			}, {
+			    //Settings
+			    type: 'danger'
+			});
+
 		})
 		.always(function() {
 			fade.fade_loading_close();

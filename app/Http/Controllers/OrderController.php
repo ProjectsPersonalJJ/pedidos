@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\OrdersModel;
+use App\LineOrdersModel;
 use App\SuppliersModel;
 use App\ProductsModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class OrderController extends Controller
 {
@@ -41,27 +44,60 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         // pending
-        // 1 step validar user
-        // 2 step valor total order ??
-        // 3 register order
-        // 4 register line orders
-        dd($request->order['line_orders']);
-        //   "order" => array:2 [
-        //     "id" => "0"
-        //     "line_orders" => array:1 [
-        //       0 => array:4 [
-        //         "idLineOrder" => "0"
-        //         "idProducto" => "1"
-        //         "quantity" => "1"
-        //         "value" => "10000"
-        //       ]
-        //     ]
-        //   ]
-        //   "user" => "123"
-        // ]
+        if ($request->ajax()) {
 
-        return response()->json(['request' => $request]);
-    }
+            $request->validate(['password' => 'required|max:8']);
+
+            // 1 step validar user
+            if (Hash::check($request->password, Auth::user()->password)) {
+
+                // 2 step valor total order ??
+                $totalValue = 0;
+                $value = 0;
+
+                foreach ($request->order["line_orders"] as $product) {
+
+                    $value = (int) ProductsModel::where('idproduct', $product['idProducto'])->take(1)->get(['value'])[0]->value;
+                    $product['value'] = $value;
+                    $totalValue += ($value * $product['quantity']);
+
+                }
+                // 3 register order
+                $order = new OrdersModel();
+                $order->user_document = Auth::user()->document;
+                $order->order_total = $totalValue;
+                $order->save();
+
+                $idorder = $order->idorder;
+
+                $line_product = null;
+                // 4 register line orders
+                foreach ($request->order["line_orders"] as $product) {
+
+                    $line_product = new LineOrdersModel();
+
+                    $line_product->orders_idorder = $idorder;
+                    $line_product->idproduct = $product['idProducto'];
+                    $line_product->value_product = $product['value'];
+                    $line_product->quantity = $product['quantity'];
+                    $line_product->save();
+                    $line_product = null;
+                }
+                
+                return response()->json(['message' => $idorder]);
+
+                // array_map($func(), $request->order["line_orders"]); 
+            }else{
+
+                return response()->json([
+                    'message' => 'Incorrect password'
+                ]);
+
+            }
+
+        }
+
+    } 
 
     /**
      * Display the specified resource.
