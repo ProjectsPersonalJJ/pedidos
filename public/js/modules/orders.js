@@ -34,11 +34,19 @@ class Line_order{
 
 }
 
+let order = null;
+// Formato de peso colombiano
+const FORMATTER_PESO = new Intl.NumberFormat('es-CO', {
+       style: 'currency',
+       currency: 'COP',
+       minimumFractionDigits: 0
+    });
+let totalValue = $('#totalValue');
+
 $(document).ready(() => {
 
 	let orderForm = $('form#orderForm');
 	let suppliers = orderForm.find('[name="supplier"]');
-	let totalValue = orderForm.find('#totalValue');
 	let products = orderForm.find('[name="products"]');
 	let quantity = orderForm.find('input[name="quantity"]');
 	let reset = orderForm.find('button[type="reset"]');
@@ -47,15 +55,7 @@ $(document).ready(() => {
 	const fade = new FadeLoading(fade_loding); //Class
 	let btnsearch = $("#search");
 	let btnsettlement = $("#settlement");
-	const confirm = $("#form-confirm-action");
-	let order = null;
-
-	// Foirmato de peso colombiano
-	const formatterPeso = new Intl.NumberFormat('es-CO', {
-	       style: 'currency',
-	       currency: 'COP',
-	       minimumFractionDigits: 0
-	    }); 
+	const confirm = $("#form-confirm-action"); 
 
 	confirm.on('submit', function(event) {// pending
 		event.preventDefault();
@@ -101,7 +101,7 @@ $(document).ready(() => {
 				element.quantity += Number(quantity.val());
 				table.find('tr').eq(position).find('td').eq(2).text(element.quantity);
 				element.value = element.quantity * lineOrder.data('value');
-				table.find('tr').eq(position).find('td').eq(3).text(formatterPeso.format(element.value));
+				table.find('tr').eq(position).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
 				insertTable = 1;
 			}
 
@@ -118,10 +118,10 @@ $(document).ready(() => {
 	                        <td>${lineOrder.attr('name')}</td>
 	                        <td>${suppliers.find('option:selected').text()}</td>
 	                        <td>${quantity.val()}</td>
-	                        <td>${formatterPeso.format(lineOrder.data('value') * quantity.val())}</td>
+	                        <td>${FORMATTER_PESO.format(lineOrder.data('value') * quantity.val())}</td>
 	                        <td>
-	                            <button class="btn btn-warning btn-sm delete"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-	                            <button class="btn btn-danger btn-sm edit"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>&nbsp;Delete</button>
+	                            <button class="btn btn-warning btn-sm edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
+	                            <button class="btn btn-danger btn-sm delete" onclick="deleteLineOrder(this)"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>&nbsp;Delete</button>
 	                        </td>
 	                    </tr>`);
 		}
@@ -153,7 +153,7 @@ $(document).ready(() => {
 				products.html('<option class="w-100" value="0">Select...</option>');
 
 				$.each(data.products, function(index, product) {
-					products.append(`<option class="w-100" data-value="${product.value}" name="${product.name}" value="${product.idproduct}">${product.name} | ${formatterPeso.format(product.value)}</option>`);
+					products.append(`<option class="w-100" data-value="${product.value}" name="${product.name}" value="${product.idproduct}">${product.name} | ${FORMATTER_PESO.format(product.value)}</option>`);
 				});
 
 			})
@@ -174,43 +174,53 @@ $(document).ready(() => {
 		
 	});
 
-	function valueTotalOrder(lineOrders) {
-		
-		let value = 0;
-
-		lineOrders.map(function(element, position) {
-			value += element.value;
-		})
-
-		totalValue.text(formatterPeso.format(value));
-
-	}
-
-	$('button.delete').on('click', (event) => {
-		// let position;
-		// $('#lineOrders').find('tbody').children('tr').each(function(index, el) {
-		// 	if (el == $(element).parent().parent()[0]) {
-		// 		position = index;
-		// 		break;
-		// 	}
-		// });
-		console.log($(this));
-	});
-
 });
+
+function valueTotalOrder(lineOrders) {
+	
+	let value = 0;
+
+	lineOrders.map(function(element, position) {
+		value += element.value;
+	})
+
+	totalValue.text(FORMATTER_PESO.format(value));
+
+}
 
 //Actions line orders
 	function deleteLineOrder(element) {
+			let message = "do you wish delete this product of you order?";
+			bootbox.confirm({
+			    message: message,
+			    buttons: {
+			        confirm: {
+			            label: 'Yes',
+			            className: 'btn-success'
+			        },
+			        cancel: {
+			            label: 'No',
+			            className: 'btn-danger'
+			        }
+			    },
+			    callback: (result) => {
+			        if (result) {
 
-		let position;
-		$('#lineOrders').find('tbody').children('tr').each(function(index, el) {
-			if (el == $(element).parent().parent()[0]) {
-				position = index;
-				break;
-			}
-		});
+			            let position = -1;
+			            $('#lineOrders').find('tbody').children('tr').each(function(index, el) {
+			           		if (el == $(element).parent().parent()[0]) {
+			           			position = index;
+			           			el.remove();
+			           		}
+			           	});
 
-
+			            if (position !== -1) {
+			           		order.line_orders.splice(position, 1);
+			            	valueTotalOrder(order.line_orders);
+			            } 
+			        }
+			    }
+			});
 	}
 
 	function editLineOrder(element) {
