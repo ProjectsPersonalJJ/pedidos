@@ -9,7 +9,7 @@
                 <form class="row form_inputs" method="POST" id="orderForm" novalidate="novalidate">
                     @csrf
                     <div class="col-md-12 text-center">
-                        <label class="h1">Order</label>
+                        <label class="h1">Order&nbsp;<small id="subtitle"></small></label>
                         <hr>
                     </div>
 
