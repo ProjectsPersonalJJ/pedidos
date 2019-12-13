@@ -142,7 +142,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             <script src="js/modules/config_orders.js"></script>
             @break;
           @case(5)
-            <!-- Main js Products -->
+            <!-- Main js orders -->
+            <script src="js/datepicker.js" type="text/javascript"></script>
+            <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
             <script src="js/modules/orders.js"></script>
             @break;
         @endswitch

@@ -110,6 +110,29 @@ class OrderController extends Controller
         //
     }
     
+    public function ordersRanchDate(Request $request)
+    {
+        if ($request->ajax()) {
+            // dd($request);
+            $orders = OrdersModel::where('datetime_order','>=', $request->start)
+                        ->where('datetime_order','<=', $request->end)->where('user_document', Auth::user()->document)->get(['idorder','datetime_order','order_total']);
+            $table = "";
+
+            foreach ($orders as $order) {
+                $table .= "<tr>
+                                <td>$order->datetime_order</td>
+                                <td>$order->order_total</td>
+                                <td>
+                                <button class=\"btn btn-warning btn-sm\" onclick=\"editOrder(this)\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
+                                <button class=\"btn btn-danger btn-sm\" onclick=\"deleteOrder(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Delete</button>
+                                </td>
+                            </tr>";
+            }
+
+            return $table;
+        }
+    }
+
     public function pullProductsBySupplier(Request $request)
     {
 

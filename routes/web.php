@@ -29,6 +29,8 @@ Route::resource('/orders', 'OrderController');
 
 Route::post('/orders/pullProductsBySupplier', 'OrderController@pullProductsBySupplier');
 
+Route::post('/orders/ordersRanchDate', 'OrderController@ordersRanchDate');
+
 Route::resource('/config_orders', 'ConfigOrderController');
 
 //Products model

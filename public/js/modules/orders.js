@@ -59,8 +59,46 @@ $(document).ready(() => {
 	let table = $('#lineOrders').find('tbody');
 	let btnsearch = $("#search");
 	let btnsettlement = $("#settlement");
-	const confirm = $("#form-confirm-action"); 
+	const confirm = $("#form-confirm-action");
+	//Modal Search orders
+	let formOrders = $('#form-search-orders');
+	let start = formOrders.find('#start');
+	let end = formOrders.find('#end');
+	let tableOrders = $('#tableOrders');
 
+	start.datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd'
+    });
+    end.datepicker({
+        uiLibrary: 'bootstrap4',
+        format: 'yyyy-mm-dd'
+    });
+
+    formOrders.on('submit', (event) => {
+    	event.preventDefault();
+    	$.ajax({
+    		url: '/orders/ordersRanchDate',
+    		headers: {'X-CSRF-TOKEN': orderForm.find('[name="_token"]').val()},
+    		type: 'POST',
+    		dataType: 'html',
+    		data: formOrders.serialize(),
+    		beforeSend: () =>{
+    			fade.fade_loading_open();
+    		}
+    	})
+    	.done((data) => {
+    		tableOrders.find('tbody').html(data);
+    	})
+    	.fail((error) => {
+    		console.log("error");
+    	})
+    	.always(() => {
+    		fade.fade_loading_close();
+    	});
+    	
+    });
+    // end modal Search Orders
 	orderForm.on('reset', (event) => {
 		products.empty();
 		products.html('<option class="w-100" value="0">Select...</option>');
