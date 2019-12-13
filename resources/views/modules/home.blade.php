@@ -15,6 +15,7 @@
 <!--================End Home Area =================-->
     
 <!--================Day Orders =================-->
+@if(in_array(5,$optionHome))
 <section>
     <div class="container">
         <h2 class="text-center">Day Orders</h2>
@@ -60,9 +61,12 @@
         </div>
     </div>
 </section>
-<!--================End Day Orders =================-->
 <br>
+@endif
+<!--================End Day Orders =================-->
+
 <!--================Products for Suppliers =================-->
+@if(in_array(6,$optionHome))
 <section>
     <div class="container">
         <h2 class="text-center">Products by Suppliers</h2>
@@ -97,6 +101,7 @@
         </div>
     </div>
 </section>
+@endif
 <!--================End Products for Suppliers =================-->
 
 @endsection

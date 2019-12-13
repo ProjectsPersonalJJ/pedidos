@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\Permissions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use App\TypeUserModel;
+use App\Permission;
+use App\OptionPermissionModel;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('permissions:Users,0')->only('index');
+        $this->middleware('permissions:Users,1')->only('store');
+        $this->middleware('permissions:Users,3')->only('update');
+        $this->middleware('permissions:Users,4')->only('destroy');
     }
     /**
      * Display a listing of the resource.
@@ -21,9 +29,12 @@ class UserController extends Controller
      */
     public function index()
     {
+        $permissions = session()->get('permissions');
         return view('modules.users', [
             "module" => 2,
-            "typeUsers" => TypeUserModel::all()
+            "typeUsers" => TypeUserModel::all(),
+            "optionUser" => $permissions['Users']['options'],
+            "optionPermission" => $permissions['Permissions']['options']
         ]);
     }
 
@@ -89,6 +100,8 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
+        $permissions = session()->get('permissions');
+        $options = $permissions['Users']['options'];
         if ($request->ajax()) {
             $users = null;
             if ($request->all()) {
@@ -121,11 +134,10 @@ class UserController extends Controller
                                 <td>$user->email</td>
                                 <td>" . "<span class=\"badge badge-" . ($user->status == 1 ? "success\">Active</span>" : "danger\">Desactive</span>")
                         . "</td>
-                                <td>
-                                    <button value=\"$user->document\" onclick=\"editUser(this)\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                    <button value=\"$user->document\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") . "
-                                    <button class=\"btn btn-primary btn-sm\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i>&nbsp;Permissions</button>
-                                </td>
+                                <td>" . (in_array(3, $options) ? "<button value=\"$user->document\" onclick=\"editUser(this)\" data-toggle=\"tooltip\" title=\"Edit\" class=\"btn btn-warning btn-sm\"" . ($user->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></button>" : "")
+                        . (in_array(4, $options) ? "&nbsp;<button value=\"$user->document\" data-toggle=\"tooltip\" title=\"Delete\" class=\"btn btn-" . ($user->status == 1 ? "danger btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i></button>" : "success btn-sm\" onclick=\"changeStatusUser(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i></button>") : "")
+                        . (array_key_exists('Permissions', $permissions) ? "&nbsp;<button value=\"$user->document\" data-toggle=\"tooltip\" title=\"Permissions\" class=\"btn btn-primary btn-sm\" onclick=\"getPermissions(this)\"><i class=\"fa fa-tasks\" aria-hidden=\"true\"></i></button>" : "") .
+                        "</td>
                             </tr>";
                 }
                 $table .= "</tbody><tfoot>
@@ -220,5 +232,98 @@ class UserController extends Controller
         return response()->json([
             'response' => false
         ]);
+    }
+
+    public function getPermissions(Request $request)
+    {
+        $permissions = $this->getPermissionsUser($request->document);
+
+        return response()->json([
+            'response' => $permissions
+        ]);
+    }
+
+    public function savePermissions(Request $request)
+    {
+        //dd($request->Products);
+        $validatedData = Validator::make($request->all(), [
+            'Orders.2' => 'required_with:Orders.3,Orders.4',
+            'Configurations.1' => 'required_with:Configurations.2',
+            'Permissions.1' => 'required_with:Permissions.2',
+            'Users.2' => 'required_with:Users.3,Users.4',
+            'Suppliers.2' => 'required_with:Suppliers.3,Suppliers.4',
+            'Products.2' => 'required_with:Products.3,Products.4'
+        ]);
+        if ($validatedData->fails()) {
+            return response()->json([
+                'validate' => false
+            ]);
+        }
+        $data = $validatedData->getdata();
+        $document = $data['document'];
+        Arr::forget($data, '_token');
+        Arr::forget($data, 'document');
+
+        //Transaction
+        DB::transaction(function () use($data, $document) {
+            //dd($data);
+            foreach ($data as $key => $value) {
+                DB::table('permissions')
+                ->updateOrInsert(
+                    ['document' => $document, 'idmodule' => env($key)]
+                );
+
+                /*if(count(DB::select('select 1 from permissions where document = ? and idmodule=?', [$document, env($key)]))==0){
+                    DB::insert('insert into permissions (idmodule, document) values (?, ?)', [env($key), $document]);
+                }*/
+                //$idpermission=DB::select('select idpermission from permissions where document = ? and idmodule=?', [$document, env($key)]);
+                $idpermission=DB::table('permissions')->where([
+                    ['document', '=', $document],
+                    ['idmodule', '=', env($key)],
+                ])->get(['idpermission'])->first()->idpermission;
+                    
+                DB::update('update options_permissions set status = 0 where idpermission = ?', [$idpermission]);
+                foreach ($value as $item) {
+                    DB::table('options_permissions')
+                    ->updateOrInsert(
+                        ['idpermission' => $idpermission, 'idoption' => env($item)],
+                        ['status' => 1]
+                    );
+                    /*if(count(DB::select('select 1 from options_permissions where idpermission=? and idoption=?', [$idpermission, env($item)]))==0){
+                        DB::insert('insert into options_permissions (idpermission, idoption, status) values (?, ?, 1)', [$idpermission, env($item)]);
+                    }else{
+                        DB::update('update options_permissions set status = 1 where idpermission = ? and idoption=?', [$idpermission, env($item)]);
+                    }*/
+                }
+            }
+        });
+
+
+        return response()->json([
+            'validate' => true
+        ]);
+    }
+
+    protected function getPermissionsUser($document)
+    {
+        $permissions = Permission::where('document', $document)->get();
+        //dd($permissions);
+        $userPermissions = [];
+        if (count($permissions) > 0) {
+            for ($i = 0; $i < count($permissions); $i++) {
+                $module = $permissions[$i]->module->toArray();
+                $permission = [];
+                $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
+                $userOptions = [];
+                for ($k = 0; $k < count($options); $k++) {
+                    $userOptions = Arr::prepend($userOptions, $options[$k]->idoption);
+                }
+                $permission = Arr::add($permission, 'options', $userOptions);
+                $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
+            }
+        } else {
+            //consultar por tipo de usuario
+        }
+        return $userPermissions;
     }
 }
