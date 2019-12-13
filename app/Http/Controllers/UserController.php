@@ -11,6 +11,7 @@ use App\TypeUserModel;
 use App\Permission;
 use App\OptionPermissionModel;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -28,10 +29,12 @@ class UserController extends Controller
      */
     public function index()
     {
+        $permissions = session()->get('permissions');
         return view('modules.users', [
             "module" => 2,
             "typeUsers" => TypeUserModel::all(),
-            "optionUser" => session()->get('permissions')['Users']['options']
+            "optionUser" => $permissions['Users']['options'],
+            "optionPermission" => $permissions['Permissions']['options']
         ]);
     }
 
@@ -241,13 +244,69 @@ class UserController extends Controller
     }
 
     public function savePermissions(Request $request)
-    { 
-        dd($request);
+    {
+        //dd($request->Products);
+        $validatedData = Validator::make($request->all(), [
+            'Orders.2' => 'required_with:Orders.3,Orders.4',
+            'Configurations.1' => 'required_with:Configurations.2',
+            'Permissions.1' => 'required_with:Permissions.2',
+            'Users.2' => 'required_with:Users.3,Users.4',
+            'Suppliers.2' => 'required_with:Suppliers.3,Suppliers.4',
+            'Products.2' => 'required_with:Products.3,Products.4'
+        ]);
+        if ($validatedData->fails()) {
+            return response()->json([
+                'validate' => false
+            ]);
+        }
+        $data = $validatedData->getdata();
+        $document = $data['document'];
+        Arr::forget($data, '_token');
+        Arr::forget($data, 'document');
+
+        //Transaction
+        DB::transaction(function () use($data, $document) {
+            //dd($data);
+            foreach ($data as $key => $value) {
+                DB::table('permissions')
+                ->updateOrInsert(
+                    ['document' => $document, 'idmodule' => env($key)]
+                );
+
+                /*if(count(DB::select('select 1 from permissions where document = ? and idmodule=?', [$document, env($key)]))==0){
+                    DB::insert('insert into permissions (idmodule, document) values (?, ?)', [env($key), $document]);
+                }*/
+                //$idpermission=DB::select('select idpermission from permissions where document = ? and idmodule=?', [$document, env($key)]);
+                $idpermission=DB::table('permissions')->where([
+                    ['document', '=', $document],
+                    ['idmodule', '=', env($key)],
+                ])->get(['idpermission'])->first()->idpermission;
+                    
+                DB::update('update options_permissions set status = 0 where idpermission = ?', [$idpermission]);
+                foreach ($value as $item) {
+                    DB::table('options_permissions')
+                    ->updateOrInsert(
+                        ['idpermission' => $idpermission, 'idoption' => env($item)],
+                        ['status' => 1]
+                    );
+                    /*if(count(DB::select('select 1 from options_permissions where idpermission=? and idoption=?', [$idpermission, env($item)]))==0){
+                        DB::insert('insert into options_permissions (idpermission, idoption, status) values (?, ?, 1)', [$idpermission, env($item)]);
+                    }else{
+                        DB::update('update options_permissions set status = 1 where idpermission = ? and idoption=?', [$idpermission, env($item)]);
+                    }*/
+                }
+            }
+        });
+
+
+        return response()->json([
+            'validate' => true
+        ]);
     }
 
     protected function getPermissionsUser($document)
     {
-        $permissions = Permission::where('document', $document)->where('status', '1')->get();
+        $permissions = Permission::where('document', $document)->get();
         //dd($permissions);
         $userPermissions = [];
         if (count($permissions) > 0) {

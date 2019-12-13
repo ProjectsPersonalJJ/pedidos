@@ -17,14 +17,20 @@ class Permissions
      */
     public function handle($request, Closure $next, $module, $option)
     {
-        $permissions=session()->get('permissions');
-        if(Arr::has($permissions, $module)){
-            if($option==0){
-                if(in_array(1, $permissions[$module]['options']) || in_array(2, $permissions[$module]['options'])){
-                    return $next($request);
+        $permissions = session()->get('permissions');
+        if (Arr::has($permissions, $module)) {
+            if ($option == 0) {
+                if ($module == 'Configurations') {
+                    if (in_array(3, $permissions[$module]['options']) || in_array(2, $permissions[$module]['options'])) {
+                        return $next($request);
+                    }
+                } else {
+                    if (in_array(1, $permissions[$module]['options']) || in_array(2, $permissions[$module]['options'])) {
+                        return $next($request);
+                    }
                 }
-            }else{
-                if(in_array($option, $permissions[$module]['options'])){
+            } else {
+                if (in_array($option, $permissions[$module]['options'])) {
                     return $next($request);
                 }
                 return response()->json([

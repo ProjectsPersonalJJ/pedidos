@@ -65,11 +65,11 @@ class LoginController extends Controller
 
     protected function getPermissions()
     {
-        $permissions = Permission::where('document', Auth::user()->document)->where('status', '1')->get();
+        $permissions = Permission::where('document', Auth::user()->document)->get();
         $userPermissions = [];
         for ($i = 0; $i < count($permissions); $i++) {
             $module = $permissions[$i]->module->toArray();
-            $permission = ['url' => $module['url']];
+            $permission = ['url' => $module['url'], 'idfather'=>$module['idfather'], 'idmodule'=>$module['idmodule']];
             $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
             $userOptions = [];
             for ($k = 0; $k < count($options); $k++) {

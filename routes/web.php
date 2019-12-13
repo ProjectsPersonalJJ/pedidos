@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
 
 	Route::get('/home', function () {
 		$permissions = session()->get('permissions');
-		return view('modules.home', ['module' => 0, 'optionHome' => (array_key_exists('Home', $permissions) ? $permissions['Home']['options'] : [])]);
+		return view('modules.home', ['module' => 0, 'optionHome' => (array_key_exists('HomePedidos', $permissions) ? $permissions['HomePedidos']['options'] : [])]);
 	});
 
 	Route::resource('/users', 'UserController');

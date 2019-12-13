@@ -2,10 +2,25 @@ let formPermissions = $('#formUpdatePermissions');
 //let loading = $('#fade-loading');
 //const fade = new FadeLoading(loading); //Class
 let submitPermissions = formPermissions.find('button[type="submit"]');
+let documento;
+let divErrors=$('#errorsFormPermissions small ul');
 
-$(document).ready(function () {    
+/*function printErrors(array) {    
+    $.each(array, function (k, v) {
+        $.each(v, function (j, h) {
+            divErrors.append('<li>' + h + '</li>');
+        });
+    });
+}
+
+function clearMessageForm() {
+    divErrors.empty();
+}*/
+
+$(document).ready(function () {
     formPermissions.on('submit', (event) => {
         event.preventDefault();
+        //clearMessageForm();
         let token = $('input[name="_token"]').val();
         $.ajax({
             url: "/permissions",
@@ -14,19 +29,39 @@ $(document).ready(function () {
                 "X-CSRF-TOKEN": token
             },
             dataType: 'json',
-            data: formPermissions.serialize(),
+            data: formPermissions.serialize() + '&document=' + documento,
             beforeSend: () => {
                 fade.fade_loading_open();
             }
         }).done((data) => {
-            //printPermissions(data);
+            if(data.validate){
+                $.notify({ 
+                    //Options
+                    message: "Update user permissions success!!"
+                }, {
+                    //Settings
+                    type: 'success'
+                });
+            }else{
+                //printErrors(data.errors);
+                $.notify({ 
+                    //Options
+                    message: 'Form validation failed'
+                }, {
+                    //Settings
+                    type: 'danger'
+                });
+            }
         }).always(() => {
             fade.fade_loading_close();
         });
     });
 });
 
+
+
 function getPermissions(element) {
+    documento = $(element).val();
     let token = $('input[name="_token"]').val();
     $.ajax({
         url: "/permissions",
@@ -35,7 +70,7 @@ function getPermissions(element) {
             "X-CSRF-TOKEN": token
         },
         dataType: 'json',
-        data: { document: $(element).val() },
+        data: { document: documento },
         beforeSend: () => {
             fade.fade_loading_open();
         }
@@ -46,12 +81,12 @@ function getPermissions(element) {
     });
 }
 
-function cleanForm(){
+function cleanForm() {
     formPermissions[0].reset();
 }
 
 function printPermissions(data) {
-    $('#modalPermissions').modal('show');    
+    $('#modalPermissions').modal('show');
     cleanForm();
     $.each(data.response, function (index1, value1) {
         index1 = index1.replace(" ", "", "gi");

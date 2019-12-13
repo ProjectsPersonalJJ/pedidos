@@ -36,12 +36,42 @@
                                <li class="nav-item"><a class="nav-link" href="/home">Home</a></li> 
                                 @php
                                     $permissions=session()->get('permissions');
+                                    $productsManag=Arr::where($permissions, function ($value, $key) {
+                                            return $value['idfather']==env('Products_management');
+                                    });
+                                    $ordersManag=Arr::where($permissions, function ($value, $key) {
+                                            return $value['idfather']==env('Orders_management');
+                                    });
+                                    $anotherOptions=Arr::where($permissions, function ($value, $key) {
+                                            return $value['idfather']!=env('Orders_management') && $value['idfather']!=env('Products_management');
+                                    });
                                 @endphp
-                                @foreach ($permissions as $key => $value)
-                                    @if($key != 'Permissions' && $key != 'Home')
-                                        <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
-                                    @endif
+                                @foreach ($anotherOptions as $key => $value)
+                                    @if ($key!='HomePedidos' && $key!='Permissions')
+                                        <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>    
+                                    @endif                                    
                                 @endforeach
+                                @if (count($ordersManag)>0)
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Orders&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        @foreach ($ordersManag as $key => $value)
+                                            <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                </li>  
+                                @endif
+                                @if (count($productsManag)>0)
+                                <li class="nav-item submenu dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Products&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
+                                    <ul class="dropdown-menu">
+                                        @foreach ($productsManag as $key => $value)
+                                            <li class="nav-item"><a class="nav-link" href="{{$value['url']}}">{{$key}}</a></li>
+                                        @endforeach
+                                    </ul>
+                                </li>  
+                                @endif
+                                
                                 
                                 
                                 <li class="nav-item submenu dropdown">

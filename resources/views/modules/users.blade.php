@@ -111,19 +111,19 @@
                           <div class="card border-bottom-0 border-top-0">
                             <div class="card-body">
                                 <section id="CardHome">
-                                    <h5 class="card-title">Home&nbsp;<input value="Home" type="checkbox" id="HomeAll" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
-                                    <div class="container" id="Home">
+                                    <h5 class="card-title">Home&nbsp;<input value="HomePedidos" type="checkbox" id="HomePedidosAll" onclick="checkBoxAll(this)"><small class="text-muted">all</small></h5>
+                                    <div class="container" id="HomePedidos">
                                       <div class="row">
                                           <label class="h6">Day Orders:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="dayOrders" name="dayOrders">
+                                              <input type="checkbox" value="DAYORDERS" id="dayOrders" name="HomePedidos[1]">
                                               <label>Read</label>
                                           </div>
                                       </div>
                                       <div class="row">
                                           <label class="h6">Products by suppliers:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="productsBySuppliers" name="productsBySuppliers">
+                                              <input type="checkbox" value="PRODUCTSBYSUPPLIERS" id="productsBySuppliers" name="HomePedidos[2]">
                                               <label>Read</label>
                                           </div>
                                       </div>
@@ -134,26 +134,26 @@
                                     <div class="container" id="Orders">
                                       <div class="row">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="OrdersCreate" name="OrdersCreate">
+                                              <input type="checkbox" value="CREATE" id="OrdersCreate" name="Orders[1]">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" value="" onclick="checkBoxRead(this,'Orders')" id="OrdersRead" name="OrdersRead">
+                                              <input type="checkbox" value="READ" onclick="checkBoxRead(this,'Orders')" id="OrdersRead" name="Orders[2]">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this,'Orders')" id="OrdersUpdate" name="OrdersUpdate">
+                                              <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this,'Orders')" id="OrdersUpdate" name="Orders[3]">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this, Orders)" id="OrdersDelete" name="OrdersDelete">
+                                              <input type="checkbox" value="DELETE" onclick="checkBoxUpdateOrDelete(this, 'Orders')" id="OrdersDelete" name="Orders[4]">
                                               <label>Delete</label>
                                           </div>
                                       </div><br>
                                       <div class="row">
                                           <label class="h6">Settlement:</label>
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="OrdersSettlement" name="OrdersSettlement">
+                                              <input type="checkbox" value="SETTLEMENT" id="OrdersSettlement" name="Orders[5]">
                                               <label>Read</label>
                                           </div>
                                       </div>
@@ -164,11 +164,11 @@
                                         <div class="container">
                                             <div class="row" id="OrdersConfigurations">
                                                 <div class="col-md-12">
-                                                    <input type="checkbox" value="" onclick="checkBoxRead(this,'OrdersConfigurations')" id="OrdersConfigurationsRead" name="OrdersConfigurationsRead">
+                                                    <input type="checkbox" value="READ" onclick="checkBoxRead(this,'OrdersConfigurations')" id="OrdersConfigurationsRead" name="Configurations[1]">
                                                     <label>Read</label>
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this,'OrdersConfigurations')" id="OrdersConfigurationsUpdate" name="OrdersConfigurationsUpdate">
+                                                    <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this,'OrdersConfigurations')" id="OrdersConfigurationsUpdate" name="Configurations[2]">
                                                     <label>Update</label>
                                                 </div>
                                             </div>
@@ -183,19 +183,19 @@
                                     <div class="container">
                                       <div class="row" id="Users">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="UsersCreate" name="UsersCreate">
+                                              <input type="checkbox" value="CREATE" id="UsersCreate" name="Users[1]">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxRead(this,'Users')" id="UsersRead" name="UsersRead">
+                                              <input type="checkbox" value="READ" onclick="checkBoxRead(this,'Users')" id="UsersRead" name="Users[2]">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersUpdate" name="UsersUpdate">
+                                              <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersUpdate" name="Users[3]">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersDelete" name="UsersDelete">
+                                              <input type="checkbox" value="DELETE" onclick="checkBoxUpdateOrDelete(this,'Users')" id="UsersDelete" name="Users[4]">
                                               <label>Delete</label>
                                           </div>
                                       </div><br>
@@ -206,11 +206,11 @@
                                         <div class="container">
                                           <div class="row" id="Permissions">
                                               <div class="col-md-12">
-                                                  <input type="checkbox" value="" onclick="checkBoxRead(this, 'Permissions')" id="PermissionsRead" name="PermissionsRead">
+                                                  <input type="checkbox" value="READ" onclick="checkBoxRead(this, 'Permissions')" id="PermissionsRead" name="Permissions[1]">
                                                   <label>Read</label>
                                               </div>
                                               <div class="col-md-12">
-                                                  <input type="checkbox" value="" onclick="checkBoxUpdateOrDelete(this, 'Permissions')" id="PermissionsUpdate" name="PermissionsUpdate">
+                                                  <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this, 'Permissions')" id="PermissionsUpdate" name="Permissions[2]">
                                                   <label>Update</label>
                                               </div>
                                           </div><br>
@@ -225,19 +225,19 @@
                                     <div class="container">
                                         <div class="row" id="Suppliers">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="SuppliersCreate" name="SuppliersCreate">
+                                              <input type="checkbox" value="CREATE" id="SuppliersCreate" name="Suppliers[1]">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxRead(this, 'Suppliers')" id="SuppliersRead" name="SuppliersRead">
+                                              <input type="checkbox" value="READ" onclick="checkBoxRead(this, 'Suppliers')" id="SuppliersRead" name="Suppliers[2]">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersUpdate" name="SuppliersUpdate">
+                                              <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersUpdate" name="Suppliers[3]">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersDelete" name="SuppliersDelete">
+                                              <input type="checkbox" value="DELETE" onclick="checkBoxUpdateOrDelete(this, 'Suppliers')" id="SuppliersDelete" name="Suppliers[4]">
                                               <label>Delete</label>
                                           </div>
                                       </div>
@@ -248,19 +248,19 @@
                                     <div class="container">
                                         <div class="row" id="Products">
                                           <div class="col-md-12">
-                                              <input type="checkbox" id="ProductsCreate" name="ProductsCreate">
+                                              <input type="checkbox" value="CREATE" id="ProductsCreate" name="Products[1]">
                                               <label>Create</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxRead(this,'Products')" id="ProductsRead" name="ProductSRead">
+                                              <input type="checkbox" value="READ" onclick="checkBoxRead(this,'Products')" id="ProductsRead" name="Products[2]">
                                               <label>Read</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsUpdate" name="ProductsUpdate">
+                                              <input type="checkbox" value="UPDATE" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsUpdate" name="Products[3]">
                                               <label>Update</label>
                                           </div>
                                           <div class="col-md-12">
-                                              <input type="checkbox" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsDelete" name="ProductsDelete">
+                                              <input type="checkbox" value="DELETE" onclick="checkBoxUpdateOrDelete(this, 'Products')" id="ProductsDelete" name="Products[4]">
                                               <label>Delete</label>
                                           </div>
                                       </div>
@@ -268,15 +268,18 @@
                                 </section>
                             </div>
                           </div>
-                          
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Save</button>
+                        
                     </div>
-                </form>
+                
                 <!--  -->
              </div>
              <div class="modal-footer">
-                
+                    @if(in_array(3,$optionPermission))
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Save</button>
+                    @endif
+                </form>
+                <!-- <div class="text-danger" id="errorsFormPermissions"><small><ul></ul></small></div> -->
              </div>
            </div>
          </div>
