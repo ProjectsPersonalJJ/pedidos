@@ -49,6 +49,7 @@ let position = -1;
 let orderForm = $('form#orderForm');
 let suppliers = orderForm.find('[name="supplier"]');
 let products = orderForm.find('[name="products"]');
+let changeProduct = 0;
 let quantity = orderForm.find('input[name="quantity"]');
 let fade_loding = $('#fade-loading');
 let tittle = $('small#subtitle');
@@ -104,6 +105,11 @@ $(document).ready(() => {
 		products.html('<option class="w-100" value="0">Select...</option>');
 		suppliers.find('option').attr('selected', false);
 		tittle.text('');
+		changeProduct = 0;
+	});
+
+	products.change((event) => {
+		changeProduct = 1;
 	});
 
 	confirm.on('submit', function(event) {
@@ -217,11 +223,17 @@ $(document).ready(() => {
 				}
 		}else{
 			//Update Table Line orders
+			//Pending  this ->
+// =====================================================================================================================================>
+			//Update product class orders -> lines orders
+			order.line_orders[position].idProducto = product.val();
+			order.line_orders[position].idSupplier = suppliers.find('option:selected').val();
+			order.line_orders[position].quantity = Number(quantity.val());
+			order.line_orders[position].value = (product.data('value') * quantity.val());
 
-			//Validation exist product into the table line orders 
-			order.line_orders.map(function(element, index) {
-
-				if (element.idProducto == product.val()) {
+			//Validation exist product into the table line orders
+			$.each(order.line_orders, (index, val) => {
+				if (element.idProducto == product.val() && changeProduct == 1) {
 					order.line_orders.splice(position, 1);
 
 					element.quantity += Number(quantity.val());
@@ -232,9 +244,26 @@ $(document).ready(() => {
 					table.find('tr').eq(position).remove();
 
 					insertTable = 1;
+					break;
 				}
-
 			});
+
+			// order.line_orders.map(function(element, index) {
+
+			// 	if (element.idProducto == product.val() && changeProduct == 1) {
+			// 		order.line_orders.splice(position, 1);
+
+			// 		element.quantity += Number(quantity.val());
+			// 		element.value = element.quantity * product.data('value');
+
+			// 		table.find('tr').eq(index).find('td').eq(2).text(element.quantity);
+			// 		table.find('tr').eq(index).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
+			// 		table.find('tr').eq(position).remove();
+
+			// 		insertTable = 1;
+			// 	}
+
+			// });
 
 			if (insertTable == 0) {
 
