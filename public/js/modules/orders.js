@@ -225,45 +225,28 @@ $(document).ready(() => {
 			//Update Table Line orders
 			//Pending  this ->
 // =====================================================================================================================================>
-			//Update product class orders -> lines orders
-			order.line_orders[position].idProducto = product.val();
-			order.line_orders[position].idSupplier = suppliers.find('option:selected').val();
-			order.line_orders[position].quantity = Number(quantity.val());
-			order.line_orders[position].value = (product.data('value') * quantity.val());
 
 			//Validation exist product into the table line orders
-			$.each(order.line_orders, (index, val) => {
-				if (element.idProducto == product.val() && changeProduct == 1) {
-					order.line_orders.splice(position, 1);
+			//utilizar el metodo find
+			let idproduct = product.val();
+			let existe = order.line_orders.indexOf(order.line_orders.find(product => product.idProducto == idproduct));
+			console.log(existe);
 
-					element.quantity += Number(quantity.val());
-					element.value = element.quantity * product.data('value');
-
-					table.find('tr').eq(index).find('td').eq(2).text(element.quantity);
-					table.find('tr').eq(index).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
-					table.find('tr').eq(position).remove();
-
-					insertTable = 1;
-					break;
-				}
-			});
-
-			// order.line_orders.map(function(element, index) {
-
-			// 	if (element.idProducto == product.val() && changeProduct == 1) {
-			// 		order.line_orders.splice(position, 1);
-
-			// 		element.quantity += Number(quantity.val());
-			// 		element.value = element.quantity * product.data('value');
-
-			// 		table.find('tr').eq(index).find('td').eq(2).text(element.quantity);
-			// 		table.find('tr').eq(index).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
-			// 		table.find('tr').eq(position).remove();
-
-			// 		insertTable = 1;
-			// 	}
-
-			// });
+			if (existe != position && existe != -1) {
+				//Update product class orders -> lines orders
+				order.line_orders[existe].idProducto = product.val();
+				order.line_orders[existe].idSupplier = suppliers.find('option:selected').val();
+				order.line_orders[existe].quantity += Number(quantity.val());
+				order.line_orders[existe].value = (product.data('value') * order.line_orders[existe].quantity);
+				// ...
+				table.find('tr').eq(existe).find('td').eq(2).text(order.line_orders[existe].quantity);
+				table.find('tr').eq(existe).find('td').eq(3).text(FORMATTER_PESO.format(order.line_orders[existe].value));
+				// ...
+				order.line_orders.splice(position, 1);
+				table.find('tr').eq(position).remove();
+				// ...
+				insertTable = 1;
+			}
 
 			if (insertTable == 0) {
 
