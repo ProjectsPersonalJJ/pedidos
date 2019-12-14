@@ -70,10 +70,7 @@
                                         @endforeach
                                     </ul>
                                 </li>  
-                                @endif
-                                
-                                
-                                
+                                @endif                                
                                 <li class="nav-item submenu dropdown">
                                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}&nbsp;{{Auth::user()->last_name}}&nbsp;<i class="fa fa-sort-asc" aria-hidden="true"></i></a>
                                         <ul class="dropdown-menu exit">
@@ -171,8 +168,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
             @break;
           @case(4)
           <!-- Main js Config Orders -->
-            <script src="js/class/FadeLoading.js"></script>
             <script src="js/modules/config_orders.js"></script>
+            @break;
+          @case(5)
+            <!-- Main js orders -->
+            <script src="js/datepicker.js" type="text/javascript"></script>
+            <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+            <script src="js/modules/orders.js"></script>
             @break;
         @endswitch
     </body>

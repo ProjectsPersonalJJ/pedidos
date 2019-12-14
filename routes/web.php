@@ -38,19 +38,16 @@ Route::middleware('auth')->group(function () {
 		Auth::logout();
 		return view('layout.login');
 	});
+
+	Route::resource('/orders', 'OrderController');
+
+	Route::post('/orders/pullProductsBySupplier', 'OrderController@pullProductsBySupplier');
+
+	Route::post('/orders/ordersRanchDate', 'OrderController@ordersRanchDate');
+
+	Route::resource('/config_orders', 'ConfigOrderController');
+
+	Route::resource('/products', 'ProductController');
+
+	Route::resource('/suppliers', 'SupplierController');
 });
-
-
-
-Route::get('/orders', function () {
-	return view('modules.orders');
-});
-
-
-Route::resource('/config_orders', 'ConfigOrderController');
-
-//Products model
-Route::resource('/products', 'ProductController');
-
-
-Route::resource('/suppliers', 'SupplierController');

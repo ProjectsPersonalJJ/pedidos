@@ -33,6 +33,7 @@ class LoginController extends Controller
                 ]);
             }
             $data = $validatedData->getData();
+
             $user = User::find($data['document']);
             if ($user != null) {
                 if ($user->status == '1') {
