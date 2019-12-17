@@ -5,22 +5,6 @@ class Order{
 		this.id = 0;
 		this.line_orders = [];
 	}
-
-	registrar_order(){
-
-	}
-
-	consultar_order(){
-
-	}
-
-	modificar_order(){
-
-	}
-
-	destroy(){
-
-	}
 }
 
 class Line_order{
@@ -53,11 +37,11 @@ let changeProduct = 0;
 let quantity = orderForm.find('input[name="quantity"]');
 let fade_loding = $('#fade-loading');
 let tittle = $('small#subtitle');
+let table = $('#lineOrders').find('tbody');
 const fade = new FadeLoading(fade_loding); //Class
 
 $(document).ready(() => {
 
-	let table = $('#lineOrders').find('tbody');
 	let btnsearch = $("#search");
 	let btnsettlement = $("#settlement");
 	const confirm = $("#form-confirm-action");
@@ -75,7 +59,7 @@ $(document).ready(() => {
         uiLibrary: 'bootstrap4',
         format: 'yyyy-mm-dd'
     });
-
+    // add product into list line-orders
     formOrders.on('submit', (event) => {
     	event.preventDefault();
     	$.ajax({
@@ -92,14 +76,14 @@ $(document).ready(() => {
     		tableOrders.find('tbody').html(data);
     	})
     	.fail((error) => {
-    		console.log("error");
+    		// console.log("error");
     	})
     	.always(() => {
     		fade.fade_loading_close();
     	});
     	
     });
-    // end modal Search Orders
+    // Reset form of add product
 	orderForm.on('reset', (event) => {
 		products.empty();
 		products.html('<option class="w-100" value="0">Select...</option>');
@@ -111,7 +95,7 @@ $(document).ready(() => {
 	products.change((event) => {
 		changeProduct = 1;
 	});
-
+	// Confirm action Register/Update order
 	confirm.on('submit', function(event) {
 		event.preventDefault();
 		$.ajax({
@@ -127,15 +111,15 @@ $(document).ready(() => {
 				fade.fade_loading_open();
 			}
 		})
-		.done(function(data) {// pending
-			//Esconder el modal y limpiar el formulario
-			//Mostrar mensaje de que se registro correctamente la orden
-			//Limpiar el formulario y la tabla de pedidos
-			//Eliminar la variable de order global
-			//Limpiar el small de errores
+		.done(function(data) {//
+
 			if ($.isNumeric(data.message)) {
 				// Order register
-				console.log('Order Register');
+				initialForm();
+				confirm[0].reset();
+				$('#modalConfirm').modal('hide');
+				order = null;
+
 				$.notify({ // Estos objetos se retornaran desde el controlador
 				    //Options
 				    message: `Order Register successful` // estos mensajes se van a sacar de un json
@@ -223,11 +207,7 @@ $(document).ready(() => {
 				}
 		}else{
 			//Update Table Line orders
-			//Pending  this ->
-// =====================================================================================================================================>
-
 			//Validation exist product into the table line orders
-			//utilizar el metodo find
 			let idproduct = product.val();
 			let existe = order.line_orders.indexOf(order.line_orders.find(product => product.idProducto == idproduct));
 			console.log(existe);
@@ -333,10 +313,10 @@ function valueTotalOrder(lineOrders) {
 			    }
 			});
 	}
-
+	// consult your orders between two dates
 	function editLineOrder(element) {
 
-		$('#lineOrders').find('tbody').children('tr').each(function(index, el) {
+		table.children('tr').each(function(index, el) {
 			if (el == $(element).parent().parent()[0]) {
 				position = index;
 				orderForm[0].reset();// reset form
@@ -353,8 +333,17 @@ function valueTotalOrder(lineOrders) {
 
 	}
 
-	function update_button() {// Pending
-		
+	function changeButtonForm() {
+		//Pending
+	}
+
+	function update_button() {
+		// Pending
+	}
+
+	function initialForm() {
+		totalValue.text('$ 0');
+		table.empty();
 	}
 
 	function readProducts(idSupplier, select = 0) {
@@ -394,6 +383,9 @@ function valueTotalOrder(lineOrders) {
 		});
 	}
 
+	function destroyOrder() {
+		// Pending...
+	}
 
 // btnrequest.on('click', (event) => {
 // 	let message = "do you wish request this order?";

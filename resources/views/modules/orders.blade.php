@@ -104,12 +104,12 @@
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
                                     <label>Date start:</label>
-                                    <input id="start" name="start">
+                                    <input id="start" name="start" readonly="true">
                                     <small class="text-danger"></small>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
                                     <label>Date end:</label>
-                                    <input id="end" name="end">
+                                    <input id="end" name="end" readonly="true">
                                     <small class="text-danger"></small>
                                 </div>
                             </div>

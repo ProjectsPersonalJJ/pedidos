@@ -9,6 +9,7 @@ use App\ProductsModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -54,39 +55,47 @@ class OrderController extends Controller
                 // 2 step valor total order ??
                 $totalValue = 0;
                 $value = 0;
+                DB::beginTransaction();
+                try {
 
-                foreach ($request->order["line_orders"] as $product) {
+                    foreach ($request->order["line_orders"] as $product) {
 
-                    $value = (int) ProductsModel::where('idproduct', $product['idProducto'])->take(1)->get(['value'])[0]->value;
-                    $product['value'] = $value;
-                    $totalValue += ($value * $product['quantity']);
+                        $value = (int) ProductsModel::where('idproduct', $product['idProducto'])->take(1)->get(['value'])[0]->value;
+                        $product['value'] = $value;
+                        $totalValue += ($value * $product['quantity']);
 
-                }
-                // 3 register order
-                $order = new OrdersModel();
-                $order->user_document = Auth::user()->document;
-                $order->order_total = $totalValue;
-                $order->save();
+                    }
+                    // 3 register order
+                    $order = new OrdersModel();
+                    $order->user_document = Auth::user()->document;
+                    $order->order_total = $totalValue;
+                    $order->save();
 
-                $idorder = $order->idorder;
+                    $idorder = $order->idorder;
 
-                $line_product = null;
-                // 4 register line orders
-                foreach ($request->order["line_orders"] as $product) {
-
-                    $line_product = new LineOrdersModel();
-
-                    $line_product->orders_idorder = $idorder;
-                    $line_product->idproduct = $product['idProducto'];
-                    $line_product->value_product = $product['value'];
-                    $line_product->quantity = $product['quantity'];
-                    $line_product->save();
                     $line_product = null;
-                }
-                
-                return response()->json(['message' => $idorder]);
+                    // 4 register line orders
+                    foreach ($request->order["line_orders"] as $product) {
 
-                // array_map($func(), $request->order["line_orders"]); 
+                        $line_product = new LineOrdersModel();
+
+                        $line_product->orders_idorder = $idorder;
+                        $line_product->idproduct = $product['idProducto'];
+                        $line_product->value_product = $product['value'];
+                        $line_product->quantity = $product['quantity'];
+                        $line_product->save();
+                        $line_product = null;
+                    }
+                    DB::commit();
+                    return response()->json(['message' => $idorder]);
+
+                } catch ( \Exception $e) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Error transaction'
+                    ]);
+                }
+
             }else{
 
                 return response()->json([
@@ -124,7 +133,7 @@ class OrderController extends Controller
                                 <td>$order->order_total</td>
                                 <td>
                                 <button class=\"btn btn-warning btn-sm\" onclick=\"editOrder(this)\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                <button class=\"btn btn-danger btn-sm\" onclick=\"deleteOrder(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Delete</button>
+                                <button class=\"btn btn-danger btn-sm\" onclick=\"destroyOrder(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Delete</button>
                                 </td>
                             </tr>";
             }
