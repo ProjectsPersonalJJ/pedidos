@@ -91,10 +91,25 @@ $(document).ready(() => {
 		tittle.text('');
 		changeProduct = 0;
 	});
-
+	//Change combobox the products
 	products.change((event) => {
 		changeProduct = 1;
 	});
+	//Show modal comfirm dialog
+	$('#request').on('click', (event)=>{
+		if(order!=null){
+			$('#modalConfirm').modal();
+		}else{
+			$.notify({ // Estos objetos se retornaran desde el controlador
+			    //Options
+			    message: `You need add min a product in this order list!` // estos mensajes se van a sacar de un json
+			}, {
+			    //Settings
+			    type: 'warning'
+			});
+		}
+	});
+
 	// Confirm action Register/Update order
 	confirm.on('submit', function(event) {
 		event.preventDefault();
@@ -162,94 +177,105 @@ $(document).ready(() => {
 		
 	});
 
+	// Add product in table line order
 	orderForm.on('submit', (event) => {
 
 		event.preventDefault();
 		let product = products.find('option:selected');
-		let insertTable = 0;
+		if (product.val() != 0 && quantity.val() >= 1) {
 
-		if (edit == 0) {
-			// Add product in table line order
+			let insertTable = 0;
 
-				if (order == null) {
-					order = new Order();
-				}
+			if (edit == 0) {
 
-				//Validation exist product into the table line orders 
-				order.line_orders.map(function(element, position) {
-
-					if (element.idProducto == product.val()) {
-						element.quantity += Number(quantity.val());
-						table.find('tr').eq(position).find('td').eq(2).text(element.quantity);
-						element.value = element.quantity * product.data('value');
-						table.find('tr').eq(position).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
-						insertTable = 1;
+					if (order == null) {
+						order = new Order();
 					}
 
-				});
+					//Validation exist product into the table line orders 
+					order.line_orders.map(function(element, position) {
 
-				// Insert product into the table line orders
-				if (insertTable == 0) {
-					order.line_orders.push(
-						new Line_order(0, product.val(), Number(quantity.val()), (product.data('value') * quantity.val()), suppliers.find('option:selected').val())
-					);
+						if (element.idProducto == product.val()) {
+							element.quantity += Number(quantity.val());
+							table.find('tr').eq(position).find('td').eq(2).text(element.quantity);
+							element.value = element.quantity * product.data('value');
+							table.find('tr').eq(position).find('td').eq(3).text(FORMATTER_PESO.format(element.value));
+							insertTable = 1;
+						}
 
-					table.append(`<tr>
-			                        <td>${product.attr('name')}</td>
-			                        <td>${suppliers.find('option:selected').text()}</td>
-			                        <td>${quantity.val()}</td>
-			                        <td>${FORMATTER_PESO.format(product.data('value') * quantity.val())}</td>
-			                        <td>
-			                            <button class="btn btn-warning btn-sm" onclick="editLineOrder(this)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
-			                            <button class="btn btn-danger btn-sm" onclick="deleteLineOrder(this)"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>&nbsp;Delete</button>
-			                        </td>
-			                    </tr>`);
+					});
+
+					// Insert product into the table line orders
+					if (insertTable == 0) {
+						order.line_orders.push(
+							new Line_order(0, product.val(), Number(quantity.val()), (product.data('value') * quantity.val()), suppliers.find('option:selected').val())
+						);
+
+						table.append(`<tr>
+				                        <td>${product.attr('name')}</td>
+				                        <td>${suppliers.find('option:selected').text()}</td>
+				                        <td>${quantity.val()}</td>
+				                        <td>${FORMATTER_PESO.format(product.data('value') * quantity.val())}</td>
+				                        <td>
+				                            <button class="btn btn-warning btn-sm" onclick="editLineOrder(this)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>&nbsp;Edit</button>
+				                            <button class="btn btn-danger btn-sm" onclick="deleteLineOrder(this)"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i>&nbsp;Delete</button>
+				                        </td>
+				                    </tr>`);
+					}
+			}else{
+				//Update Table Line orders
+				//Validation exist product into the table line orders
+				let idproduct = product.val();
+				let existe = order.line_orders.indexOf(order.line_orders.find(product => product.idProducto == idproduct));
+				console.log(existe);
+
+				if (existe != position && existe != -1) {
+					//Update product class orders -> lines orders
+					order.line_orders[existe].idProducto = product.val();
+					order.line_orders[existe].idSupplier = suppliers.find('option:selected').val();
+					order.line_orders[existe].quantity += Number(quantity.val());
+					order.line_orders[existe].value = (product.data('value') * order.line_orders[existe].quantity);
+					// ...
+					table.find('tr').eq(existe).find('td').eq(2).text(order.line_orders[existe].quantity);
+					table.find('tr').eq(existe).find('td').eq(3).text(FORMATTER_PESO.format(order.line_orders[existe].value));
+					// ...
+					order.line_orders.splice(position, 1);
+					table.find('tr').eq(position).remove();
+					// ...
+					insertTable = 1;
 				}
+
+				if (insertTable == 0) {
+
+					order.line_orders[position].idProducto = product.val();
+					order.line_orders[position].idSupplier = suppliers.find('option:selected').val();
+					order.line_orders[position].quantity = Number(quantity.val());
+					order.line_orders[position].value = (product.data('value') * quantity.val());
+					edit = 0;
+					//
+					table.find('tr').eq(position).find('td').eq(0).text(product.attr('name'));//Product
+					table.find('tr').eq(position).find('td').eq(1).text(suppliers.find('option:selected').text());//Supplier
+					table.find('tr').eq(position).find('td').eq(2).text(quantity.val());//Quantity
+					table.find('tr').eq(position).find('td').eq(3).text(FORMATTER_PESO.format(product.data('value') * quantity.val()));//value
+					//
+				}
+
+				position= -1;
+
+			}
+
+			valueTotalOrder(order.line_orders);
+
+			orderForm[0].reset();
 		}else{
-			//Update Table Line orders
-			//Validation exist product into the table line orders
-			let idproduct = product.val();
-			let existe = order.line_orders.indexOf(order.line_orders.find(product => product.idProducto == idproduct));
-			console.log(existe);
-
-			if (existe != position && existe != -1) {
-				//Update product class orders -> lines orders
-				order.line_orders[existe].idProducto = product.val();
-				order.line_orders[existe].idSupplier = suppliers.find('option:selected').val();
-				order.line_orders[existe].quantity += Number(quantity.val());
-				order.line_orders[existe].value = (product.data('value') * order.line_orders[existe].quantity);
-				// ...
-				table.find('tr').eq(existe).find('td').eq(2).text(order.line_orders[existe].quantity);
-				table.find('tr').eq(existe).find('td').eq(3).text(FORMATTER_PESO.format(order.line_orders[existe].value));
-				// ...
-				order.line_orders.splice(position, 1);
-				table.find('tr').eq(position).remove();
-				// ...
-				insertTable = 1;
-			}
-
-			if (insertTable == 0) {
-
-				order.line_orders[position].idProducto = product.val();
-				order.line_orders[position].idSupplier = suppliers.find('option:selected').val();
-				order.line_orders[position].quantity = Number(quantity.val());
-				order.line_orders[position].value = (product.data('value') * quantity.val());
-				edit = 0;
-				//
-				table.find('tr').eq(position).find('td').eq(0).text(product.attr('name'));//Product
-				table.find('tr').eq(position).find('td').eq(1).text(suppliers.find('option:selected').text());//Supplier
-				table.find('tr').eq(position).find('td').eq(2).text(quantity.val());//Quantity
-				table.find('tr').eq(position).find('td').eq(3).text(FORMATTER_PESO.format(product.data('value') * quantity.val()));//value
-				//
-			}
-
-			position= -1;
-
+			//Show message "lack fill a filed"
+			$.notify({
+				message: "Lack fill a filed"
+			},{
+				type: "danger"
+			});
 		}
 
-		valueTotalOrder(order.line_orders);
-
-		orderForm[0].reset();
 	});
 
 	suppliers.change((event) => {

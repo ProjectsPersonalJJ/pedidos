@@ -80,10 +80,7 @@
                         <button type="submit" value="submit" class="btn btn-primary" id="search" data-target="#modalSearch" data-toggle="modal"><i class="fa fa-search" aria-hidden="true"></i>&nbsp;Search</button>
                     </div>
                     <div class="col-auto">
-                        <button type="submit" value="submit" class="btn btn-primary" id="settlement"><i class="fa fa-tasks" aria-hidden="true"></i>&nbsp;settlement</button>
-                    </div>
-                    <div class="col-auto">
-                        <button type="button" class="btn btn-primary" data-target="#modalConfirm" data-toggle="modal" id="request"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Request</button>
+                        <button type="button" class="btn btn-primary" id="request"><i class="fa fa-check-square-o" aria-hidden="true"></i>&nbsp;Request</button>
                     </div>
                 </div>
             </div>
