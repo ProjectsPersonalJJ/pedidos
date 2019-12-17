@@ -40,16 +40,16 @@ let tittle = $('small#subtitle');
 let table = $('#lineOrders').find('tbody');
 const fade = new FadeLoading(fade_loding); //Class
 
-$(document).ready(() => {
+let btnsearch = $("#search");
+let btnsettlement = $("#settlement");
+const confirm = $("#form-confirm-action");
+//Modal Search orders
+let formOrders = $('#form-search-orders');
+let start = formOrders.find('#start');
+let end = formOrders.find('#end');
+let tableOrders = $('#tableOrders');
 
-	let btnsearch = $("#search");
-	let btnsettlement = $("#settlement");
-	const confirm = $("#form-confirm-action");
-	//Modal Search orders
-	let formOrders = $('#form-search-orders');
-	let start = formOrders.find('#start');
-	let end = formOrders.find('#end');
-	let tableOrders = $('#tableOrders');
+$(document).ready(() => {
 
 	start.datepicker({
         uiLibrary: 'bootstrap4',
@@ -409,8 +409,58 @@ function valueTotalOrder(lineOrders) {
 		});
 	}
 
-	function destroyOrder() {
-		// Pending...
+	function destroyOrder(element) {
+		bootbox.confirm({
+		    message: 'Do you delete this order?',
+		    buttons: {
+		        confirm: {
+		            label: 'Yes',
+		            className: 'btn-success'
+		        },
+		        cancel: {
+		            label: 'No',
+		            className: 'btn-danger'
+		        }
+		    },
+		    callback: (result) => {
+		        if (result) {
+		        	let idorder = $(element).parent().parent().data('id');
+		           $.ajax({
+		           	url: `/orders/${idorder}`,
+		           	type: 'DELETE',
+		           	headers: {'X-CSRF-TOKEN': orderForm.find('[name="_token"]').val()},
+		           	dataType: 'json',
+		           	beforeSend: () =>{
+		           		fade.fade_loading_open();
+		           	}
+		           })
+		           .done((data) => {
+			           	if (data) {
+
+			           		$.notify({
+			           			message: `Delete order successful!`
+			           		}, {
+			           			type: 'success'
+			           		});
+			           	}
+		           })
+		           .fail((error) => {
+			           	$.notify({
+	           				message: `Error: ${error}`
+	           			}, {
+	           				type: 'danger'
+	           			});
+			        })
+		           .always(() => {
+		           		formOrders[0].reset();
+		           		tableOrders.find('tbody').empty();
+		           		$('#modalSearch').modal('hide');
+		           		fade.fade_loading_close();
+		           });
+		           
+		        }
+		    }
+		});	
 	}
 
 // btnrequest.on('click', (event) => {

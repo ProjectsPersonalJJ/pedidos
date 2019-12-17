@@ -128,7 +128,7 @@ class OrderController extends Controller
             $table = "";
 
             foreach ($orders as $order) {
-                $table .= "<tr>
+                $table .= "<tr data-id=\"$order->idorder\">
                                 <td>$order->datetime_order</td>
                                 <td>$order->order_total</td>
                                 <td>
@@ -179,8 +179,36 @@ class OrderController extends Controller
      * @param  \App\OrdersModel  $ordersModel
      * @return \Illuminate\Http\Response
      */
-    public function destroy(OrdersModel $ordersModel)
+    public function destroy($id, Request $request)
     {
-        //
+
+        if($request->ajax()){
+
+            DB::beginTransaction();
+            $line_orders = null;
+            try {
+                $line_orders = LineOrdersModel::where('orders_idorder', $id)->get(['idlines_order']);
+
+                foreach ($line_orders as $line) {
+                    LineOrdersModel::find($line->idlines_order)->delete(); 
+                }
+
+                OrdersModel::find($id)->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'response' => true
+                ]);
+
+            } catch ( \Exception $e ) {
+                DB::rollBack();
+                return response()->json([
+                    'response' => $e
+                ]);
+
+            }
+        }
+
     }
 }
