@@ -3,7 +3,7 @@
 @include('layout.fade_loading');
 
 @section('content')
-
+@if(in_array(1,$optionsProducts))
 	    <section class="home_gallery_area">
 	        <div class="container">
 	            <form class="row form_inputs" method="post" id="form-products" novalidate="novalidate">
@@ -47,8 +47,9 @@
 	                </div> -->
 	            </form>
 	        </div>
-	    </section>
-
+		</section>
+@endif		
+@if(in_array(2,$optionsProducts))
 	<!-- Esto va en otra vista cuando se presione el boton "Search" -->
 	    <section>
 	        <div class="container">
@@ -59,5 +60,5 @@
 	            </div>
 	        </div>
 	    </section>
-
+@endif
 @endsection

@@ -275,9 +275,9 @@
                 <!--  -->
              </div>
              <div class="modal-footer">
-                    @if(in_array(3,$optionPermission))
+                @if(in_array(3,$optionPermission))
                         <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;Save</button>
-                    @endif
+                @endif    
                 </form>
                 <!-- <div class="text-danger" id="errorsFormPermissions"><small><ul></ul></small></div> -->
              </div>

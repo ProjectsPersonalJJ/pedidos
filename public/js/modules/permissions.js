@@ -1,26 +1,12 @@
 let formPermissions = $('#formUpdatePermissions');
-//let loading = $('#fade-loading');
-//const fade = new FadeLoading(loading); //Class
 let submitPermissions = formPermissions.find('button[type="submit"]');
 let documento;
-let divErrors=$('#errorsFormPermissions small ul');
+let divErrors = $('#errorsFormPermissions small ul');
 
-/*function printErrors(array) {    
-    $.each(array, function (k, v) {
-        $.each(v, function (j, h) {
-            divErrors.append('<li>' + h + '</li>');
-        });
-    });
-}
-
-function clearMessageForm() {
-    divErrors.empty();
-}*/
 
 $(document).ready(function () {
     formPermissions.on('submit', (event) => {
         event.preventDefault();
-        //clearMessageForm();
         let token = $('input[name="_token"]').val();
         $.ajax({
             url: "/permissions",
@@ -34,24 +20,34 @@ $(document).ready(function () {
                 fade.fade_loading_open();
             }
         }).done((data) => {
-            if(data.validate){
-                $.notify({ 
+            if (data.authorize == false) {
+                $.notify({
                     //Options
-                    message: "Update user permissions success!!"
-                }, {
-                    //Settings
-                    type: 'success'
-                });
-            }else{
-                //printErrors(data.errors);
-                $.notify({ 
-                    //Options
-                    message: 'Form validation failed'
+                    message: data.message
                 }, {
                     //Settings
                     type: 'danger'
                 });
+            } else {
+                if (data.validate) {
+                    $.notify({
+                        //Options
+                        message: "Update user permissions success!!"
+                    }, {
+                        //Settings
+                        type: 'success'
+                    });
+                } else {
+                    $.notify({
+                        //Options
+                        message: 'Form validation failed'
+                    }, {
+                        //Settings
+                        type: 'danger'
+                    });
+                }
             }
+
         }).always(() => {
             fade.fade_loading_close();
         });

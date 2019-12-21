@@ -10,14 +10,14 @@ let value = $('input[name="value"]');
 let submit = form.find('button[type="submit"]');
 
 $(document).ready(() => {
-	
+
 	//Consult products
 	consult_products();
 
 	//Create Products
 	form.on('submit', (event) => {
 		event.preventDefault();
-		
+
 		actionsProductos();
 	});
 
@@ -43,63 +43,71 @@ $(document).ready(() => {
 //
 function actionsProductos() {
 	bootbox.confirm({
-	    message: "You wish to execute this action?",
-	    buttons: {
-	        confirm: {
-	            label: 'Yes',
-	            className: 'btn-success'
-	        },
-	        cancel: {
-	            label: 'No',
-	            className: 'btn-danger'
-	        }
-	    },
-	    callback: (result) => {
-	    	if (result) {
+		message: "You wish to execute this action?",
+		buttons: {
+			confirm: {
+				label: 'Yes',
+				className: 'btn-success'
+			},
+			cancel: {
+				label: 'No',
+				className: 'btn-danger'
+			}
+		},
+		callback: (result) => {
+			if (result) {
 
-	    		$.ajax({
-	    			url: 'http://localhost:8000/products'+(action==2?`/${submit.data('idproduct')}`:''),
-	    			type: action==1?'POST':'PUT',
-	    			dataType: 'json',
-	    			data: form.serialize(),
-	    			beforeSend: () =>{
-	    				//Fade - loadion open
-	    				fade_loading_open();
-	    				messageErrorsClear();
-	    			}
-	    		})
-	    		.done((data) => {
-	    			form[0].reset();
-	    			consult_products();
-	    			$.notify({
-	    				message: "Create product success"
-	    			},{
-	    				type: "success"
-	    			});
-	    			//Fade - loadion close
-	    		})
-	    		.fail((error) => {
+				$.ajax({
+					url: 'http://localhost:8000/products' + (action == 2 ? `/${submit.data('idproduct')}` : ''),
+					type: action == 1 ? 'POST' : 'PUT',
+					dataType: 'json',
+					data: form.serialize(),
+					beforeSend: () => {
+						//Fade - loadion open
+						fade_loading_open();
+						messageErrorsClear();
+					}
+				})
+					.done((data) => {
+						if (data.authorize == false) {
+							$.notify({
+								message: data.message
+							}, {
+								type: "danger"
+							});
+						} else {
+							form[0].reset();
+							consult_products();
+							$.notify({
+								message: "Create product success"
+							}, {
+								type: "success"
+							});
+						}
+						//Fade - loadion close
+					})
+					.fail((error) => {
 
-	    			$.map(error.responseJSON.errors, function(element, index) {
-						$('#'+index).next('small').text(element[0]);
-    				})
+						$.map(error.responseJSON.errors, function (element, index) {
+							$('#' + index).next('small').text(element[0]);
+						})
 
-	    			$.notify({
-	    				message: "Create product error"
-	    			},{
-	    				type: "danger"
-	    			});
+						$.notify({
+							message: "Create product error"
+						}, {
+							type: "danger"
+						});
 
-	    		}).always(() => {
+					}).always(() => {
 
-	    			fade_loading_close();
+						fade_loading_close();
 
-	    		});
+					});
 
-	    	}
-	    }
+			}
+		}
 	});
-	
+
 }
 
 function consult_products() {
@@ -108,17 +116,17 @@ function consult_products() {
 		type: 'GET',
 		dataType: 'json'
 	})
-	.done(function(data) {
-		placetable.html(data);
+		.done(function (data) {
+			placetable.html(data);
 
-		$("#tabla").DataTable({
-			'scrollX': true
+			$("#tabla").DataTable({
+				'scrollX': true
+			});
+		})
+		.fail(function () {
+			console.log("error");
 		});
-	})
-	.fail(function() {
-		console.log("error");
-	});
-	
+
 }
 
 function editProduct(element) {
@@ -126,7 +134,7 @@ function editProduct(element) {
 	let token = $('input[name="_token"]').val();
 	$.ajax({
 		url: '/products/show',
-		headers: {'X-CSRF-TOKEN': token},
+		headers: { 'X-CSRF-TOKEN': token },
 		type: 'GET',
 		dataType: 'json',
 		data: {
@@ -136,105 +144,105 @@ function editProduct(element) {
 			fade_loading_open();
 		}
 	})
-	.done(function(product) {
+		.done(function (product) {
 
-		if (product) {
-			form[0].reset();
-			action = 2;
-			title_form.text(`(${product.name})`);
-			name.val(product.name);
-			seelectSupplier.find(`option[value="${product.idsupplier}"]`).prop('selected', true);
-			value.val(product.value);
-			submit.data('idproduct', product.idproduct);
-			changesButtonSubmit(action);
-			$('body, html').animate({
-				'scrollTop': 0
-			},700);
-		}
+			if (product) {
+				form[0].reset();
+				action = 2;
+				title_form.text(`(${product.name})`);
+				name.val(product.name);
+				seelectSupplier.find(`option[value="${product.idsupplier}"]`).prop('selected', true);
+				value.val(product.value);
+				submit.data('idproduct', product.idproduct);
+				changesButtonSubmit(action);
+				$('body, html').animate({
+					'scrollTop': 0
+				}, 700);
+			}
 
-	})
-	.fail(function() {
+		})
+		.fail(function () {
 
-		console.log("error");
+			console.log("error");
 
-	}).always(() =>{
+		}).always(() => {
 
-		fade_loading_close();
+			fade_loading_close();
 
-	});
-	
+		});
+
 }
 
 //Change button submit 1=Create 2= Update
 function changesButtonSubmit(action = 0) {
-	switch(action){
+	switch (action) {
 		case 1:
-		//
-		submit.removeClass("btn-warning");
-		submit.addClass("btn-primary");
-		submit.html("<i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"></i>&nbsp;Create");
+			//
+			submit.removeClass("btn-warning");
+			submit.addClass("btn-primary");
+			submit.html("<i class=\"fa fa-plus-square-o\" aria-hidden=\"true\"></i>&nbsp;Create");
 			break;
 		case 2:
-		//
-		submit.removeClass("btn-primary");
-		submit.addClass("btn-warning");
-		submit.html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Update");
+			//
+			submit.removeClass("btn-primary");
+			submit.addClass("btn-warning");
+			submit.html("<i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Update");
 			break;
 	}
 }
 
 function change_status_product(element) {
 	bootbox.confirm({
-	    message: "You wish change the status of this product?",
-	    buttons: {
-	        confirm: {
-	            label: 'Yes',
-	            className: 'btn-success'
-	        },
-	        cancel: {
-	            label: 'No',
-	            className: 'btn-danger'
-	        }
-	    },
-	    callback: (result) => {
-	        if (result) {
-	        	let token = $('input[name="_token"]').val();
-	        	$.ajax({
-	        		url: 'http://localhost:8000/products/'+element.value,
-	        		headers: {'X-CSRF-TOKEN': token},
-	        		type: 'DELETE',
-	        		dataType: 'json',
-	        		data: {idproduct: element.value},
-	        		beforeSend: () =>{
-	        			fade_loading_open();
-	        		}
-	        	})
-	        	.done(function() {
+		message: "You wish change the status of this product?",
+		buttons: {
+			confirm: {
+				label: 'Yes',
+				className: 'btn-success'
+			},
+			cancel: {
+				label: 'No',
+				className: 'btn-danger'
+			}
+		},
+		callback: (result) => {
+			if (result) {
+				let token = $('input[name="_token"]').val();
+				$.ajax({
+					url: 'http://localhost:8000/products/' + element.value,
+					headers: { 'X-CSRF-TOKEN': token },
+					type: 'DELETE',
+					dataType: 'json',
+					data: { idproduct: element.value },
+					beforeSend: () => {
+						fade_loading_open();
+					}
+				})
+					.done(function () {
 
-	        		consult_products();
-	        		$.notify({
-	        			message: 'Change status success!!'
-	        		},{
-	        			type: 'success'
-	        		});
+						consult_products();
+						$.notify({
+							message: 'Change status success!!'
+						}, {
+							type: 'success'
+						});
 
-	        	})
-	        	.fail(function() {
+					})
+					.fail(function () {
 
-	        		$.notify({
-	        			message: 'Change status Error!!'
-	        		},{
-	        			type: 'danger'
-	        		});
+						$.notify({
+							message: 'Change status Error!!'
+						}, {
+							type: 'danger'
+						});
 
-	        	}).always(()=>{
+					}).always(() => {
 
-	        		fade_loading_close();
+						fade_loading_close();
 
-	        	});
-	        	
-	        }
-	    }
+					});
+
+			}
+		}
 	});
 }
 

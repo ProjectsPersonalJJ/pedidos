@@ -67,6 +67,7 @@ class LoginController extends Controller
     protected function getPermissions()
     {
         $permissions = Permission::where('document', Auth::user()->document)->get();
+        $permissions = count($permissions)==0 ? Permission::where('idtype_user', Auth::user()->idtype_user)->get() : $permissions;
         $userPermissions = [];
         for ($i = 0; $i < count($permissions); $i++) {
             $module = $permissions[$i]->module->toArray();

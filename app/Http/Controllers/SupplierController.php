@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permissions:Suppliers,0')->only('index');
+        $this->middleware('permissions:Suppliers,1')->only('store');
+        $this->middleware('permissions:Suppliers,3')->only('update');
+        $this->middleware('permissions:Suppliers,4')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +22,8 @@ class SupplierController extends Controller
     public function index()
     {
         return view('modules.suppliers',[
-            "module" => 1 //Subpliers ID
+            "module" => 1, //Subpliers ID
+            'optionsSuppliers' => session()->get('permissions')['Suppliers']['options']
         ]);
     }
 
@@ -61,6 +69,8 @@ class SupplierController extends Controller
      */
     public function show(SuppliersModel $suppliersModel, Request $request)
     {
+        $permissions = session()->get('permissions');
+        $options = $permissions['Suppliers']['options'];
         if ($request->ajax()) {
             $suppliers = null;
             if ($request->all()) {
@@ -86,11 +96,10 @@ class SupplierController extends Controller
                                 <td>"."<span class=\"badge badge-".
                                 ($supplier->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
                                 ."</td>
-                                <td>
-                                    <button value=\"$supplier->idsupplier\" onclick=\"editSupplier(this)\" class=\"btn btn-warning btn-sm\"".($supplier->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                    <button value=\"$supplier->idsupplier\" class=\"btn btn-".($supplier->status ==1? "danger btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"changeStatusSupplier(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
-                                    
-                                </td>
+                                <td>"
+                                .(in_array(3, $options) ? "<button value=\"$supplier->idsupplier\" onclick=\"editSupplier(this)\" data-toggle=\"tooltip\" title=\"Edit\" class=\"btn btn-warning btn-sm\"" . ($supplier->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>" : "")
+                                . (in_array(4, $options) ? "&nbsp;<button value=\"$supplier->idsupplier\" data-toggle=\"tooltip\" onclick=\"changeStatusSupplier(this)\" title=\"Delete\" class=\"btn btn-" . ($supplier->status == 1 ? "danger btn-sm\" ><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") : "").
+                                "</td>
                             </tr>";
                 }
                 $table.="</tbody><tfoot>
@@ -130,7 +139,7 @@ class SupplierController extends Controller
 
             $supplier = SuppliersModel::findOrFail($idsupplier);
             $supplier->name = $request->name;
-            $supplier->email = $request->name;
+            $supplier->email = $request->email;
             $supplier->save();
 
             return $idsupplier;

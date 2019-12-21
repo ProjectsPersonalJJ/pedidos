@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permissions:Products,0')->only('index');
+        $this->middleware('permissions:Products,1')->only('store');
+        $this->middleware('permissions:Products,3')->only('update');
+        $this->middleware('permissions:Products,4')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +24,8 @@ class ProductController extends Controller
     {
         return view('modules.products', [
             'module' => 3,
-            'suppliers' => SuppliersModel::all()
+            'suppliers' => SuppliersModel::where('status', 1)->get(),
+            'optionsProducts' => session()->get('permissions')['Products']['options']
         ]);
     }
 
@@ -62,7 +70,8 @@ class ProductController extends Controller
      */
     public function show(ProductsModel $productsModel, Request $request)
     {
-
+        $permissions = session()->get('permissions');
+        $options = $permissions['Products']['options'];
         if ($request->ajax()) {
             $product= null;
             if ($request->all()) {
@@ -89,10 +98,9 @@ class ProductController extends Controller
                                 <td>"."<span class=\"badge badge-".
                                 ($product->status ==1?"success\">Active</span>":"danger\">Desactive</span>")
                                 ."</td>
-                                <td>
-                                    <button value=\"$product->idproduct\" onclick=\"editProduct(this)\" class=\"btn btn-warning btn-sm\"".($product->status==0?"disabled":"")."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>
-                                        <button value=\"$product->idproduct\" class=\"btn btn-".($product->status ==1? "danger btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>": "success btn-sm\" onclick=\"change_status_product(this)\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>")."
-                                </td>
+                                <td>".(in_array(3, $options) ? "<button value=\"$product->idproduct\" onclick=\"editProduct(this)\" data-toggle=\"tooltip\" title=\"Edit\" class=\"btn btn-warning btn-sm\"" . ($product->status == 0 ? "disabled" : "") . "><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i>&nbsp;Edit</button>" : "")
+                                . (in_array(4, $options) ? "&nbsp;<button value=\"$product->idproduct\" data-toggle=\"tooltip\" onclick=\"change_status_product(this)\" title=\"Delete\" class=\"btn btn-" . ($product->status == 1 ? "danger btn-sm\" ><i class=\"fa fa-thumbs-o-down\" aria-hidden=\"true\"></i>&nbsp;Deactivate</button>" : "success btn-sm\"><i class=\"fa fa-thumbs-o-up\" aria-hidden=\"true\"></i>&nbsp;Active</button>") : "").
+                                "</td>
                             </tr>";
                 }
                 $table.="</tbody><tfoot>

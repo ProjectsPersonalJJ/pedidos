@@ -33,6 +33,7 @@ class Permissions
                 if (in_array($option, $permissions[$module]['options'])) {
                     return $next($request);
                 }
+                
                 return response()->json([
                     'authorize' => false,
                     'message' => 'Unauthorized action.'

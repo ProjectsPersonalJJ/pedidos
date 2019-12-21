@@ -12,6 +12,7 @@ use App\Permission;
 use App\OptionPermissionModel;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Exception;
 
 class UserController extends Controller
 {
@@ -21,6 +22,8 @@ class UserController extends Controller
         $this->middleware('permissions:Users,1')->only('store');
         $this->middleware('permissions:Users,3')->only('update');
         $this->middleware('permissions:Users,4')->only('destroy');
+        $this->middleware('permissions:Permissions,2')->only('getPermissions');
+        $this->middleware('permissions:Permissions,3')->only('savePermissions');
     }
     /**
      * Display a listing of the resource.
@@ -34,7 +37,7 @@ class UserController extends Controller
             "module" => 2,
             "typeUsers" => TypeUserModel::all(),
             "optionUser" => $permissions['Users']['options'],
-            "optionPermission" => $permissions['Permissions']['options']
+            "optionPermission" => (array_key_exists('Permissions', $permissions) ? $permissions['Permissions']['options'] : [])
         ]);
     }
 
@@ -263,67 +266,90 @@ class UserController extends Controller
         $document = $data['document'];
         Arr::forget($data, '_token');
         Arr::forget($data, 'document');
+        DB::beginTransaction();
+        try {
+            
 
-        //Transaction
-        DB::transaction(function () use($data, $document) {
-            //dd($data);
+            DB::update('UPDATE options_permissions INNER JOIN permissions ON options_permissions.idpermission = permissions.idpermission SET options_permissions.status=0 WHERE	permissions.document = ?', [$document]);
             foreach ($data as $key => $value) {
                 DB::table('permissions')
-                ->updateOrInsert(
-                    ['document' => $document, 'idmodule' => env($key)]
-                );
-
-                /*if(count(DB::select('select 1 from permissions where document = ? and idmodule=?', [$document, env($key)]))==0){
-                    DB::insert('insert into permissions (idmodule, document) values (?, ?)', [env($key), $document]);
-                }*/
-                //$idpermission=DB::select('select idpermission from permissions where document = ? and idmodule=?', [$document, env($key)]);
-                $idpermission=DB::table('permissions')->where([
+                    ->updateOrInsert(
+                        ['document' => $document, 'idmodule' => env($key)]
+                );                
+                $idpermission = DB::table('permissions')->where([
                     ['document', '=', $document],
                     ['idmodule', '=', env($key)],
                 ])->get(['idpermission'])->first()->idpermission;
-                    
+
+                //DB::update('update options_permissions set status = 0 where idpermission = ?', [$idpermission]);
+                foreach ($value as $item) {
+                    DB::table('options_permissions')
+                        ->updateOrInsert(
+                            ['idpermission' => $idpermission, 'idoption' => env($item)],
+                            ['status' => 1]
+                        );
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'validate' => true
+            ]);
+        } catch ( \Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'validate' => false
+            ]);
+        }
+
+        /*
+        //Transaction
+        DB::transaction(function () use ($data, $document) {
+            //dd($data);
+            foreach ($data as $key => $value) {
+                DB::table('permissions')
+                    ->updateOrInsert(
+                        ['document' => $document, 'idmodule' => env($key)]
+                    );
+
+                
+                //$idpermission=DB::select('select idpermission from permissions where document = ? and idmodule=?', [$document, env($key)]);
+                $idpermission = DB::table('permissions')->where([
+                    ['document', '=', $document],
+                    ['idmodule', '=', env($key)],
+                ])->get(['idpermission'])->first()->idpermission;
+
                 DB::update('update options_permissions set status = 0 where idpermission = ?', [$idpermission]);
                 foreach ($value as $item) {
                     DB::table('options_permissions')
-                    ->updateOrInsert(
-                        ['idpermission' => $idpermission, 'idoption' => env($item)],
-                        ['status' => 1]
-                    );
-                    /*if(count(DB::select('select 1 from options_permissions where idpermission=? and idoption=?', [$idpermission, env($item)]))==0){
-                        DB::insert('insert into options_permissions (idpermission, idoption, status) values (?, ?, 1)', [$idpermission, env($item)]);
-                    }else{
-                        DB::update('update options_permissions set status = 1 where idpermission = ? and idoption=?', [$idpermission, env($item)]);
-                    }*/
+                        ->updateOrInsert(
+                            ['idpermission' => $idpermission, 'idoption' => env($item)],
+                            ['status' => 1]
+                        );
                 }
             }
         });
+*/
 
-
-        return response()->json([
-            'validate' => true
-        ]);
+        
     }
 
     protected function getPermissionsUser($document)
     {
         $permissions = Permission::where('document', $document)->get();
-        //dd($permissions);
+        $permissions = count($permissions) == 0 ? Permission::where('idtype_user', User::find($document)->idtype_user)->get() : $permissions;
         $userPermissions = [];
-        if (count($permissions) > 0) {
-            for ($i = 0; $i < count($permissions); $i++) {
-                $module = $permissions[$i]->module->toArray();
-                $permission = [];
-                $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
-                $userOptions = [];
-                for ($k = 0; $k < count($options); $k++) {
-                    $userOptions = Arr::prepend($userOptions, $options[$k]->idoption);
-                }
-                $permission = Arr::add($permission, 'options', $userOptions);
-                $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
+        for ($i = 0; $i < count($permissions); $i++) {
+            $module = $permissions[$i]->module->toArray();
+            $permission = [];
+            $options = OptionPermissionModel::where('idpermission', $permissions[$i]->idpermission)->where('status', '1')->get();
+            $userOptions = [];
+            for ($k = 0; $k < count($options); $k++) {
+                $userOptions = Arr::prepend($userOptions, $options[$k]->idoption);
             }
-        } else {
-            //consultar por tipo de usuario
+            $permission = Arr::add($permission, 'options', $userOptions);
+            $userPermissions = Arr::add($userPermissions, $module['name'], $permission);
         }
+
         return $userPermissions;
     }
 }
